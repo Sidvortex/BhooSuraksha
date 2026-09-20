@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { getBackendUrl } from '../utils/backendUrl';
 
 interface AuthUser {
   id: number;
@@ -18,9 +19,6 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-function getBackendUrl(): string {
-  return (typeof window !== 'undefined' && (window as unknown as { ENV_BACKEND_URL?: string }).ENV_BACKEND_URL) || '';
-}
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('auth_token'));

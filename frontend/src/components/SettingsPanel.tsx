@@ -13,6 +13,7 @@ import {
   Check, 
   RefreshCw 
 } from 'lucide-react';
+import { getBackendUrl, setBackendUrl as persistBackendUrl } from '../utils/backendUrl';
 
 interface SettingsPanelProps {
   geofenceRadiusKm: number;
@@ -31,14 +32,12 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
 }) => {
   const [localHigh, setLocalHigh] = useState(highRiskThreshold);
   const [localCrit, setLocalCrit] = useState(criticalThreshold);
-  const [backendUrl, setBackendUrl] = useState('');
+  const [backendUrl, setBackendUrl] = useState(() => getBackendUrl());
   const [saved, setSaved] = useState(false);
 
   const handleSave = () => {
     onUpdateThresholds(localHigh, localCrit);
-    if (typeof window !== 'undefined') {
-      (window as unknown as { ENV_BACKEND_URL?: string }).ENV_BACKEND_URL = backendUrl;
-    }
+    persistBackendUrl(backendUrl);
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   };

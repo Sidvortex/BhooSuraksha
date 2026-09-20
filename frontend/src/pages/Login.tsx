@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ShieldAlert, LogIn } from 'lucide-react';
+import { ShieldAlert, LogIn, Server } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { getBackendUrl, setBackendUrl } from '../utils/backendUrl';
 
 export const Login: React.FC = () => {
   const { login, isLoggingIn, loginError } = useAuth();
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [backendUrlInput, setBackendUrlInput] = useState(() => getBackendUrl());
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Settings (where this was previously the only place to set it) lives
+    // inside the Authority portal, which requires being logged in — so it
+    // has to be settable here too, or nobody could ever complete the
+    // first login.
+    setBackendUrl(backendUrlInput);
     const ok = await login(username, password);
     if (ok) navigate('/authority/dashboard');
   };
@@ -32,6 +39,23 @@ export const Login: React.FC = () => {
           onSubmit={handleSubmit}
           class="bg-slate-950/70 border border-slate-800 rounded-xl p-5 space-y-4"
         >
+          <div>
+            <label class="text-xs font-semibold text-slate-300 block mb-1 flex items-center gap-1.5">
+              <Server class="w-3.5 h-3.5" /> Backend URL
+            </label>
+            <input
+              id="login-backend-url"
+              type="text"
+              value={backendUrlInput}
+              onChange={(e) => setBackendUrlInput(e.target.value)}
+              placeholder="http://localhost:8000"
+              class="w-full bg-slate-900 border border-slate-700 text-slate-100 text-sm rounded-lg p-2.5 outline-none focus:border-blue-600"
+            />
+            <span class="text-xs text-slate-500 block mt-1">
+              Where your backend is running. Saved for next time too.
+            </span>
+          </div>
+
           <div>
             <label class="text-xs font-semibold text-slate-300 block mb-1">Username</label>
             <input

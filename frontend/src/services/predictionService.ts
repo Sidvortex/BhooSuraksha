@@ -15,10 +15,7 @@
  */
 
 import { IndiaPredictionRequest, IndiaPredictionResponse, MLPredictionRequest, MLPredictionResponse, ModelInfo, RiskLevel } from '../types/landslide';
-
-function getBackendUrl(): string {
-  return (typeof window !== 'undefined' && (window as unknown as { ENV_BACKEND_URL?: string }).ENV_BACKEND_URL) || '';
-}
+import { getBackendUrl } from '../utils/backendUrl';
 
 export function calculateRiskLevel(probability: number): RiskLevel {
   if (probability >= 0.85) return 'CRITICAL';

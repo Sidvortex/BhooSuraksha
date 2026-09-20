@@ -10,7 +10,7 @@ import { MonitoredLocation, AlertNotification, MLPredictionRequest, MLPrediction
 import { INITIAL_MONITORED_LOCATIONS, INITIAL_ALERTS, DEMO_STATE_RISK_SUMMARY, DEMO_MODEL_PERFORMANCE } from '../data/mockData';
 import { runLandslidePrediction } from './predictionService';
 
-const BACKEND_URL = (typeof window !== 'undefined' && (window as unknown as { ENV_BACKEND_URL?: string }).ENV_BACKEND_URL) || '';
+import { getBackendUrl } from '../utils/backendUrl';
 
 export const api = {
   /**
@@ -18,6 +18,7 @@ export const api = {
    * Fetches all monitored locations and risk classifications across the 8 NER states
    */
   async getMonitoredZones(): Promise<MonitoredLocation[]> {
+    const BACKEND_URL = getBackendUrl();
     if (BACKEND_URL) {
       try {
         const res = await fetch(`${BACKEND_URL}/api/zones`);
@@ -34,6 +35,7 @@ export const api = {
    * Fetches active and historical early warning alerts
    */
   async getAlerts(): Promise<AlertNotification[]> {
+    const BACKEND_URL = getBackendUrl();
     if (BACKEND_URL) {
       try {
         const res = await fetch(`${BACKEND_URL}/api/alerts`);
@@ -53,6 +55,7 @@ export const api = {
     stateSummaries: StateRiskSummary[];
     modelPerformance: ModelPerformanceMetrics;
   }> {
+    const BACKEND_URL = getBackendUrl();
     if (BACKEND_URL) {
       try {
         const res = await fetch(`${BACKEND_URL}/api/analytics`);
