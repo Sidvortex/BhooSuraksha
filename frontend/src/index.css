@@ -1,0 +1,174 @@
+@import "tailwindcss";
+
+/*
+ * Soviet.nvim-inspired palette (https://github.com/rezniqov/soviet.nvim)
+ * mapped onto Tailwind's default color tokens. Because every component in
+ * this app uses named tokens (bg-slate-900, text-blue-400, etc.) rather
+ * than raw hex values, overriding the tokens here recolors the whole app
+ * without touching component files.
+ */
+@theme {
+  /* Warm graphite (editor background family) */
+  --color-slate-50: #ebdfc9;
+  --color-slate-100: #d8cfc4;
+  --color-slate-200: #c6b8aa;
+  --color-slate-300: #b7aaa3;
+  --color-slate-400: #a3a187;
+  --color-slate-500: #8e7c69;
+  --color-slate-600: #746666;
+  --color-slate-700: #554b54;
+  --color-slate-800: #353232;
+  --color-slate-900: #292727;
+  --color-slate-950: #1f1d1d;
+
+  /* Enamel blue (authority accent, types/info) */
+  --color-blue-300: #9dc2dc;
+  --color-blue-400: #7ca9c9;
+  --color-blue-500: #6ba0c4;
+  --color-blue-600: #5b93bc;
+  --color-blue-700: #4a7a9e;
+  --color-blue-800: #3d6480;
+  --color-blue-900: #2f4d63;
+  --color-blue-950: #23394a;
+
+  /* Industrial turquoise (citizen accent, builtins) */
+  --color-teal-300: #8ad4cf;
+  --color-teal-400: #5bc0ba;
+  --color-teal-500: #4fb0aa;
+  --color-teal-600: #45a39e;
+  --color-teal-700: #368984;
+  --color-teal-800: #2a6d69;
+  --color-teal-900: #1f5451;
+  --color-cyan-400: #45a39e;
+  --color-cyan-500: #368984;
+
+  /* Printing red / dark red (danger, critical states) */
+  --color-red-300: #f3a89c;
+  --color-red-400: #ef7565;
+  --color-red-500: #e36a5b;
+  --color-red-600: #d65c4d;
+  --color-red-700: #c24e40;
+  --color-red-800: #a14c45;
+  --color-red-900: #833d37;
+  --color-red-950: #5c2b27;
+  --color-rose-400: #e36a5b;
+  --color-rose-500: #d65c4d;
+  --color-rose-600: #c24e40;
+
+  /* Ochre (high risk / warnings) */
+  --color-orange-300: #e0b78d;
+  --color-orange-400: #d29a69;
+  --color-orange-500: #c28c5b;
+  --color-orange-700: #b47f4f;
+  --color-orange-800: #96693f;
+  --color-orange-900: #6e4d2d;
+  --color-orange-950: #4a3320;
+
+  /* Brass (secondary warnings, "Run Prediction" tint) */
+  --color-amber-300: #e3c79a;
+  --color-amber-400: #d1b078;
+  --color-amber-500: #c09e63;
+  --color-amber-600: #a8854e;
+  --color-amber-800: #7a5f35;
+  --color-amber-900: #5c481f;
+  --color-amber-950: #3d2f1a;
+
+  /* Green ink (success / low risk) */
+  --color-emerald-300: #9ed0b7;
+  --color-emerald-400: #65aa88;
+  --color-emerald-500: #4f9975;
+  --color-emerald-600: #3f8763;
+  --color-emerald-700: #337055;
+  --color-emerald-800: #2e5c46;
+  --color-emerald-900: #234636;
+  --color-emerald-950: #17301f;
+
+  /* Burgundy (used where the app previously used indigo/purple) */
+  --color-indigo-400: #c58f9d;
+  --color-indigo-500: #b57e8d;
+  --color-indigo-600: #a56e7d;
+  --color-purple-400: #c58f9d;
+  --color-purple-500: #b57e8d;
+}
+
+@layer base {
+  body {
+    font-family: 'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  code, kbd, samp, pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+}
+
+/* Custom scrollbar for command center panels */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(71, 85, 105, 0.6);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.8);
+}
+
+/* Custom Leaflet Dark Mode tweaks */
+.leaflet-container {
+  background-color: #1F1D1D !important;
+  font-family: inherit;
+}
+
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+  background: #353232 !important;
+  color: #D8CFC4 !important;
+  border: 1px solid #554B54;
+  box-shadow: 0 10px 20px -5px rgb(0 0 0 / 0.35);
+  border-radius: 0.5rem;
+}
+
+.leaflet-popup-content {
+  margin: 12px 14px !important;
+  line-height: 1.4 !important;
+}
+
+/* Pulse animation for high risk & critical geofences */
+@keyframes geofence-pulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.75;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.35;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.75;
+  }
+}
+
+@keyframes radar-sweep {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-geofence-pulse {
+  animation: geofence-pulse 2.5s infinite ease-in-out;
+}
+
+.animate-radar {
+  animation: radar-sweep 4s linear infinite;
+}
+

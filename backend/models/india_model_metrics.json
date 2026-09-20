@@ -1,0 +1,12 @@
+{
+  "accuracy": 0.771,
+  "precision": 0.719,
+  "recall": 0.889,
+  "f1Score": 0.795,
+  "rocAuc": 0.841,
+  "trainingEvents": 1265,
+  "testDatasetSize": 506,
+  "statesRepresented": 32,
+  "modelArchitecture": "RandomForestClassifier (n_estimators=300, max_depth=8, class_weight=balanced)",
+  "dataSource": "NASA Global Landslide Catalog (GLC), India subset, 2007-2016"
+}

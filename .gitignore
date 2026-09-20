@@ -1,0 +1,27 @@
+# Frontend (Node/Vite)
+node_modules/
+dist/
+build/
+coverage/
+.env
+.env.local
+!.env.example
+
+# Backend (Python)
+__pycache__/
+*.pyc
+venv/
+.venv/
+*.egg-info/
+.pytest_cache/
+
+# Auth database — real bcrypt password hashes once accounts exist.
+# Never commit this; each deployment creates its own via create_admin.py.
+auth.db
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

@@ -1,0 +1,13 @@
+{
+  "accuracy": 0.746,
+  "precision": 0.696,
+  "recall": 0.873,
+  "f1Score": 0.774,
+  "rocAuc": 0.834,
+  "trainingEvents": 1886,
+  "testDatasetSize": 755,
+  "regionsRepresented": 37,
+  "countriesRepresented": "India, Nepal, Bhutan, Myanmar, Bangladesh, Tibet (China)",
+  "modelArchitecture": "RandomForestClassifier (n_estimators=300, max_depth=8, class_weight=balanced)",
+  "dataSource": "NASA Global Landslide Catalog, India + Himalayan border countries, 2007-2016"
+}
