@@ -186,7 +186,7 @@ export const ZoneDetailPanel: React.FC<ZoneDetailPanelProps> = ({
 
             <div>
               <div class="flex justify-between text-xs mb-1">
-                <span class="text-slate-300">Slope Gradient ({location.parameters.slope}°)</span>
+                <span class="text-slate-300">Slope Gradient ({location.parameters.slope.toFixed(1)}°)</span>
                 <span class={location.parameters.slope > 40 ? 'text-red-400 font-bold' : 'text-yellow-400'}>
                   {location.parameters.slope > 40 ? 'HIGH CONTRIBUTION' : 'MODERATE'}
                 </span>
@@ -227,7 +227,7 @@ export const ZoneDetailPanel: React.FC<ZoneDetailPanelProps> = ({
             <div class="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800">
               <span class="text-xs text-slate-400 block mb-0.5">Precipitation (1h / 24h / 7d)</span>
               <div class="font-bold text-cyan-400 font-mono text-sm">
-                {location.parameters.rainfall_1h} / {location.parameters.rainfall_24h} / {location.parameters.rainfall_7d} <span class="text-xs text-slate-400 font-normal">mm</span>
+                {location.parameters.rainfall_1h.toFixed(1)} / {location.parameters.rainfall_24h.toFixed(1)} / {location.parameters.rainfall_7d.toFixed(1)} <span class="text-xs text-slate-400 font-normal">mm</span>
               </div>
               <span class="text-xs text-rose-400">↑ Heavy monsoon accumulation</span>
             </div>
@@ -243,7 +243,7 @@ export const ZoneDetailPanel: React.FC<ZoneDetailPanelProps> = ({
             <div class="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800">
               <span class="text-xs text-slate-400 block mb-0.5">Slope & Elevation</span>
               <div class="font-bold text-amber-400 font-mono text-sm">
-                {location.parameters.slope}° <span class="text-xs text-slate-400 font-normal">at {location.parameters.elevation}m ASL</span>
+                {location.parameters.slope.toFixed(1)}° <span class="text-xs text-slate-400 font-normal">at {location.parameters.elevation.toFixed(0)}m ASL</span>
               </div>
               <span class="text-xs text-slate-400">Steep mountain incline</span>
             </div>

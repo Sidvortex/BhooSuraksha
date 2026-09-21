@@ -33,7 +33,7 @@ export const AiChatbot: React.FC<AiChatbotProps> = ({
     {
       id: 'welcome-1',
       role: 'assistant',
-      content: `Hello, I am the **NER LandslideGuard AI Assistant**. I continuously monitor telemetry across all 8 North Eastern Region states and can provide real-time risk assessments, geotechnical factor breakdowns, road vulnerability status, and disaster management response protocols.\n\nHow can I assist your operational team right now?`,
+      content: `Hello, I am the **BhooSuraksha AI Assistant**. I continuously monitor telemetry across all 8 North Eastern Region states and can provide real-time risk assessments, geotechnical factor breakdowns, road vulnerability status, and disaster management response protocols.\n\nHow can I assist your operational team right now?`,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);

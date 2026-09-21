@@ -1,5 +1,5 @@
 /**
- * Types and interfaces for NER LandslideGuard
+ * Types and interfaces for BhooSuraksha
  * North Eastern Region - Real-Time Landslide Risk Monitoring & Early Warning System
  */
 
@@ -201,11 +201,11 @@ export type PortalRole = 'AUTHORITY' | 'CITIZEN';
 
 export type CitizenNavTab = 
   | 'safe-status' 
+  | 'near-me'
   | 'routes' 
   | 'report-hazard' 
   | 'shelters' 
-  | 'guidelines' 
-  | 'sms-alerts';
+  | 'guidelines';
 
 export type CitizenHazardType =
   | 'GROUND_CRACK'

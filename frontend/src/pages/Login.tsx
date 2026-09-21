@@ -30,7 +30,7 @@ export const Login: React.FC = () => {
             <ShieldAlert class="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 class="font-semibold text-white">NER LandslideGuard</h1>
+            <h1 class="font-semibold text-white">BhooSuraksha</h1>
             <p class="text-xs text-slate-400">Authority Command Center Login</p>
           </div>
         </div>

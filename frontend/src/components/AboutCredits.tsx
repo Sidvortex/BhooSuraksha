@@ -18,14 +18,14 @@ export const AboutCredits: React.FC = () => {
       <button
         id="btn-about-credits"
         onClick={() => setIsOpen(true)}
-        class="fixed bottom-5 left-5 z-40 w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white flex items-center justify-center shadow-lg transition cursor-pointer"
+        class="fixed bottom-5 left-5 z-[2000] w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white flex items-center justify-center shadow-lg transition cursor-pointer"
         title="About this project"
       >
         <Info class="w-4 h-4" />
       </button>
 
       {isOpen && (
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+        <div class="fixed inset-0 z-[2000] flex items-center justify-center bg-black/60 px-4">
           <div class="w-full max-w-sm bg-slate-950 border border-slate-800 rounded-2xl p-5 relative">
             <button
               onClick={() => setIsOpen(false)}
@@ -40,7 +40,7 @@ export const AboutCredits: React.FC = () => {
               </div>
               <div>
                 <h2 class="text-sm font-semibold text-white">A Regional Disaster-Preparedness Initiative</h2>
-                <p class="text-xs text-slate-400">NER LandslideGuard</p>
+                <p class="text-xs text-slate-400">BhooSuraksha</p>
               </div>
             </div>
 

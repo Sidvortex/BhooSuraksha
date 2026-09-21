@@ -1,5 +1,5 @@
 """
-FastAPI backend for NER LandslideGuard.
+FastAPI backend for BhooSuraksha.
 
 Serves the trained RandomForest landslide-risk model (models/risk_model.pkl)
 to the React dashboard:
@@ -21,6 +21,7 @@ from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 import auth
+import alerts_dispatch
 import metrics
 import model
 import india_model
@@ -37,10 +38,12 @@ from schemas import (
     MLPredictionResponse,
     ModelListResponse,
     MonitoredLocation,
+    NotifyAuthoritiesRequest,
+    NotifyAuthoritiesResponse,
     UserInfo,
 )
 
-app = FastAPI(title="NER LandslideGuard API")
+app = FastAPI(title="BhooSuraksha API")
 
 # The dashboard is a static SPA that may be served from any origin (localhost,
 # a preview URL, etc.) — restrict this to the deployed frontend's origin once
@@ -86,6 +89,39 @@ def me(user: dict = Depends(auth.require_auth)):
     if not full:
         raise HTTPException(status_code=401, detail="User no longer exists")
     return full
+
+
+@app.post("/api/alerts/notify", response_model=NotifyAuthoritiesResponse)
+def notify_authorities(req: NotifyAuthoritiesRequest, user: dict = Depends(auth.require_auth)):
+    """
+    Authority-only action: dispatch a notification for a specific zone.
+    Requires a valid login (Depends(auth.require_auth)) - this is a real
+    protected endpoint, not a UI-only button.
+
+    There's no subscriber database wired up yet (see backend/data model),
+    so this honestly reports 0 recipients rather than pretending to have
+    sent something. alerts_dispatch.py has real, ready integration code
+    for MSG91/Twilio/Firebase push - connect a subscribers table and swap
+    the empty list below for a real one to make this actually deliver.
+    """
+    zone = next((z for z in zones_module.get_zones() if z["id"] == req.location_id), None)
+    if not zone:
+        raise HTTPException(status_code=404, detail=f"No zone found with id '{req.location_id}'")
+
+    subscribers: list = []  # wire this to a real subscribers table to go live
+    alerts_dispatch.send_alert(subscribers, zone["name"], zone["risk_level"])
+
+    return {
+        "status": "dispatched" if subscribers else "no_subscribers",
+        "zone_name": zone["name"],
+        "risk_level": zone["risk_level"],
+        "subscriber_count": len(subscribers),
+        "note": (
+            f"Notification triggered by {user['sub']}, but no subscriber database is "
+            "connected yet - see backend/alerts_dispatch.py and SETUP.md to wire a real "
+            "SMS/push provider and a subscribers table."
+        ),
+    }
 
 
 @app.post("/api/predict", response_model=MLPredictionResponse)

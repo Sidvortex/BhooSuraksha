@@ -18,7 +18,9 @@ import {
   Filter, 
   Send,
   Users,
-  CheckCheck
+  CheckCheck,
+  Megaphone,
+  Loader2
 } from 'lucide-react';
 
 interface AlertPanelProps {
@@ -27,6 +29,7 @@ interface AlertPanelProps {
   onSelectAlertLocation: (locationId: string) => void;
   onAcknowledgeAlert?: (alertId: string) => void;
   onVerifyCitizenReport?: (reportId: string) => void;
+  onNotifyAuthorities?: (locationId: string) => Promise<{ note: string; subscriber_count: number }>;
 }
 
 export const AlertPanel: React.FC<AlertPanelProps> = ({
@@ -34,10 +37,26 @@ export const AlertPanel: React.FC<AlertPanelProps> = ({
   citizenReports = [],
   onSelectAlertLocation,
   onAcknowledgeAlert,
-  onVerifyCitizenReport
+  onVerifyCitizenReport,
+  onNotifyAuthorities
 }) => {
   const [activeView, setActiveView] = useState<'ALERTS' | 'CITIZEN_REPORTS'>('ALERTS');
   const [severityFilter, setSeverityFilter] = useState<'ALL' | 'CRITICAL' | 'HIGH' | 'VERY_HIGH'>('ALL');
+  const [notifyState, setNotifyState] = useState<Record<string, { status: 'loading' | 'done' | 'error'; message?: string }>>({});
+
+  const handleNotify = async (locationId: string) => {
+    if (!onNotifyAuthorities) return;
+    setNotifyState((prev) => ({ ...prev, [locationId]: { status: 'loading' } }));
+    try {
+      const result = await onNotifyAuthorities(locationId);
+      setNotifyState((prev) => ({ ...prev, [locationId]: { status: 'done', message: result.note } }));
+    } catch (err) {
+      setNotifyState((prev) => ({
+        ...prev,
+        [locationId]: { status: 'error', message: err instanceof Error ? err.message : 'Failed to notify' },
+      }));
+    }
+  };
 
   const filteredAlerts = alerts.filter(a => {
     if (severityFilter === 'ALL') return true;
@@ -239,28 +258,54 @@ export const AlertPanel: React.FC<AlertPanelProps> = ({
                     </div>
 
                     {/* Footer Controls */}
-                    <div class="flex items-center justify-between pt-1">
-                      <span class="text-xs font-mono text-slate-400">
-                        Status: <strong class="text-emerald-400">{alert.status}</strong> (SDRF Notified)
-                      </span>
-                      <div class="flex items-center gap-2">
-                        {onAcknowledgeAlert && alert.status === 'ACTIVE' && (
+                    <div class="flex flex-col gap-2 pt-1">
+                      <div class="flex items-center justify-between">
+                        <span class="text-xs font-mono text-slate-400">
+                          Status: <strong class="text-emerald-400">{alert.status}</strong>
+                        </span>
+                        <div class="flex items-center gap-2">
+                          {onAcknowledgeAlert && alert.status === 'ACTIVE' && (
+                            <button
+                              onClick={() => onAcknowledgeAlert(alert.id)}
+                              class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium transition cursor-pointer"
+                            >
+                              Acknowledge
+                            </button>
+                          )}
+                          {onNotifyAuthorities && (
+                            <button
+                              id={`btn-notify-authorities-${alert.id}`}
+                              onClick={() => handleNotify(alert.locationId)}
+                              disabled={notifyState[alert.locationId]?.status === 'loading'}
+                              class="px-2.5 py-1 rounded bg-blue-800 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-medium flex items-center gap-1.5 transition cursor-pointer"
+                            >
+                              {notifyState[alert.locationId]?.status === 'loading' ? (
+                                <Loader2 class="w-3.5 h-3.5 animate-spin" />
+                              ) : (
+                                <Megaphone class="w-3.5 h-3.5" />
+                              )}
+                              <span>Notify Authorities</span>
+                            </button>
+                          )}
                           <button
-                            onClick={() => onAcknowledgeAlert(alert.id)}
-                            class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium transition cursor-pointer"
+                            id={`btn-view-map-${alert.id}`}
+                            onClick={() => onSelectAlertLocation(alert.locationId)}
+                            class="px-3 py-1 bg-rose-600/80 hover:bg-rose-500 text-white rounded text-xs font-semibold flex items-center gap-1 transition shadow cursor-pointer"
                           >
-                            Acknowledge
+                            <MapPin class="w-3.5 h-3.5" />
+                            <span>Locate on GIS Map</span>
                           </button>
-                        )}
-                        <button
-                          id={`btn-view-map-${alert.id}`}
-                          onClick={() => onSelectAlertLocation(alert.locationId)}
-                          class="px-3 py-1 bg-rose-600/80 hover:bg-rose-500 text-white rounded text-xs font-semibold flex items-center gap-1 transition shadow cursor-pointer"
-                        >
-                          <MapPin class="w-3.5 h-3.5" />
-                          <span>Locate on GIS Map</span>
-                        </button>
+                        </div>
                       </div>
+                      {notifyState[alert.locationId] && (
+                        <div class={`text-xs rounded-lg px-2.5 py-1.5 ${
+                          notifyState[alert.locationId].status === 'error'
+                            ? 'bg-red-950/40 text-red-300'
+                            : 'bg-blue-950/40 text-blue-200'
+                        }`}>
+                          {notifyState[alert.locationId].message}
+                        </div>
+                      )}
                     </div>
                   </div>
                 );

@@ -1,5 +1,5 @@
 /**
- * NER LandslideGuard – AI-Based Landslide Risk Monitoring & Early Warning System
+ * BhooSuraksha – AI-Based Landslide Risk Monitoring & Early Warning System
  * Dual Panel Application Entry Point (Authority Command Center + Citizen & Traveler Safety Portal)
  */
 
@@ -57,7 +57,7 @@ export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const { tab: routeTab } = useParams<{ tab?: string }>();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, token } = useAuth();
 
   const userRole: 'AUTHORITY' | 'CITIZEN' = location.pathname.startsWith('/authority') ? 'AUTHORITY' : 'CITIZEN';
   const activeTab = (routeTab as ActiveNavTab) || 'dashboard';
@@ -493,6 +493,7 @@ export default function App() {
                 onSelectAlertLocation={handleSelectLocationById}
                 onAcknowledgeAlert={handleAcknowledgeAlert}
                 onVerifyCitizenReport={handleVerifyCitizenReport}
+                onNotifyAuthorities={token ? (locationId) => api.notifyAuthorities(locationId, token) : undefined}
               />
             )}
 
@@ -536,7 +537,7 @@ export default function App() {
       <button
         id="btn-toggle-ai-drawer"
         onClick={() => setIsAiDrawerOpen(!isAiDrawerOpen)}
-        class="fixed bottom-5 right-5 z-40 p-3.5 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white shadow-2xl border border-white/20 transition-transform transform hover:scale-110 flex items-center gap-2 cursor-pointer group"
+        class="fixed bottom-5 right-5 z-[2000] p-3.5 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white shadow-2xl border border-white/20 transition-transform transform hover:scale-110 flex items-center gap-2 cursor-pointer group"
         title="Open NER Landslide AI Assistant"
       >
         <Bot class="w-6 h-6" />
@@ -545,7 +546,7 @@ export default function App() {
 
       {/* AI Assistant Popout Drawer */}
       {isAiDrawerOpen && (
-        <div class="fixed bottom-20 right-5 z-50 w-full max-w-md shadow-2xl animate-fadeIn">
+        <div class="fixed bottom-20 right-5 z-[2000] w-full max-w-md shadow-2xl animate-fadeIn">
           <div class="relative">
             <button
               onClick={() => setIsAiDrawerOpen(false)}
@@ -573,7 +574,7 @@ export default function App() {
       <footer class="mt-auto border-t border-slate-800 bg-slate-900 py-4 px-6 text-center text-xs text-slate-500">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
           <span>
-            NER LandslideGuard — North Eastern Region Landslide Risk Monitoring & Early Warning System
+            BhooSuraksha — North Eastern Region Landslide Risk Monitoring & Early Warning System
           </span>
           <span>
             {userRole === 'CITIZEN' ? 'Citizen Safety & Public Alert Portal' : 'Authority & Emergency Operations Command'}

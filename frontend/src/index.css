@@ -126,6 +126,13 @@
   font-family: inherit;
 }
 
+/* Dark map look using plain OpenStreetMap tiles (no API key, ever) with a
+   CSS filter, instead of a "dark" tile provider that can start requiring
+   a key later (as CARTO's did). */
+.map-dark-mode .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.9) saturate(0.9);
+}
+
 .leaflet-popup-content-wrapper, .leaflet-popup-tip {
   background: #353232 !important;
   color: #D8CFC4 !important;

@@ -95,16 +95,20 @@ export const GisMap: React.FC<GisMapProps> = ({
     // Add zoom control to top-right
     L.control.zoom({ position: 'topright' }).addTo(map);
 
-    // Default: CartoDB Dark Matter GIS Tiles
+    // Default: OpenStreetMap tiles, CSS-inverted for a dark look. Plain
+    // OSM tiles are free with no API key required — unlike CARTO's basemaps,
+    // which now require a key even for basic raster tiles (previously used
+    // here and the reason the map used to show an "API KEY REQUIRED" watermark).
     const darkTiles = L.tileLayer(
-      'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       {
-        attribution: '&copy; <a href="https://carto.com/">CARTO</a> & OpenStreetMap',
+        attribution: '&copy; OpenStreetMap contributors',
         maxZoom: 19,
-        subdomains: 'abcd'
+        subdomains: 'abc'
       }
     );
     darkTiles.addTo(map);
+    map.getContainer().classList.add('map-dark-mode');
 
     const markersGroup = L.layerGroup().addTo(map);
     const geofenceGroup = L.layerGroup().addTo(map);
@@ -132,21 +136,26 @@ export const GisMap: React.FC<GisMapProps> = ({
 
     if (mapTileStyle === 'dark') {
       L.tileLayer(
-        'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-        {
-          attribution: '&copy; CartoDB & OSM',
-          maxZoom: 19,
-          subdomains: 'abcd'
-        }
-      ).addTo(map);
-    } else {
-      L.tileLayer(
         'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         {
           attribution: '&copy; OpenStreetMap contributors',
-          maxZoom: 19
+          maxZoom: 19,
+          subdomains: 'abc'
         }
       ).addTo(map);
+      map.getContainer().classList.add('map-dark-mode');
+    } else {
+      // OpenTopoMap: free, no API key, and shows real terrain/elevation
+      // contours — genuinely useful context for a landslide risk map.
+      L.tileLayer(
+        'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+        {
+          attribution: '&copy; OpenStreetMap contributors, SRTM | &copy; OpenTopoMap (CC-BY-SA)',
+          maxZoom: 17,
+          subdomains: 'abc'
+        }
+      ).addTo(map);
+      map.getContainer().classList.remove('map-dark-mode');
     }
   }, [mapTileStyle]);
 

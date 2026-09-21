@@ -26,6 +26,19 @@ class LoginResponse(BaseModel):
     user: UserInfo
 
 
+class NotifyAuthoritiesRequest(BaseModel):
+    location_id: str
+    message: Optional[str] = None
+
+
+class NotifyAuthoritiesResponse(BaseModel):
+    status: str
+    zone_name: str
+    risk_level: RiskLevel
+    subscriber_count: int
+    note: str
+
+
 class MLPredictionRequest(BaseModel):
     latitude: float
     longitude: float

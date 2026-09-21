@@ -1,5 +1,5 @@
 /**
- * Modular AI Assistant Service for NER LandslideGuard
+ * Modular AI Assistant Service for BhooSuraksha
  * 
  * ============================================================================
  * ARCHITECTURE INTEGRATION GUIDE FOR GEMINI API:

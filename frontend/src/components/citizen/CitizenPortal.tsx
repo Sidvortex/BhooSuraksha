@@ -3,7 +3,8 @@
  * Public-facing interface for residents, commuters, and tourists across Northeast India
  */
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { 
   MonitoredLocation, 
   CitizenIncidentReport, 
@@ -18,11 +19,12 @@ import {
 } from '../../data/citizenData';
 
 import { CitizenSafetyStatus } from './CitizenSafetyStatus';
+import { NearMeMap } from './NearMeMap';
 import { HighwayCorridorChecker } from './HighwayCorridorChecker';
 import { CitizenReportHazard } from './CitizenReportHazard';
 import { ReliefSheltersView } from './ReliefSheltersView';
 import { SafetyGuidelinesView } from './SafetyGuidelinesView';
-import { SmsAlertsSubscribe } from './SmsAlertsSubscribe';
+import { SubscribeForAlerts } from './SubscribeForAlerts';
 
 import { 
   ShieldCheck, 
@@ -30,9 +32,9 @@ import {
   AlertTriangle, 
   Building2, 
   LifeBuoy, 
-  Smartphone, 
   PhoneCall, 
-  AlertOctagon
+  AlertOctagon,
+  LocateFixed
 } from 'lucide-react';
 
 interface CitizenPortalProps {
@@ -50,7 +52,13 @@ export const CitizenPortal: React.FC<CitizenPortalProps> = ({
   onUpvoteCitizenReport,
   selectedLocation
 }) => {
-  const [activeCitizenTab, setActiveCitizenTab] = useState<CitizenNavTab>('safe-status');
+  const navigate = useNavigate();
+  const { tab: routeTab } = useParams<{ tab?: string }>();
+  const activeCitizenTab = (routeTab as CitizenNavTab) || 'safe-status';
+  const setActiveCitizenTab = useCallback(
+    (tab: CitizenNavTab) => navigate(`/citizen/${tab}`),
+    [navigate]
+  );
   const [selectedState, setSelectedState] = useState<NerState>(selectedLocation?.state || 'Sikkim');
   const [selectedDistrict, setSelectedDistrict] = useState<string>(selectedLocation?.district || 'Pakyong');
   const [highwayCorridors, setHighwayCorridors] = useState<HighwayCorridor[]>(INITIAL_HIGHWAY_CORRIDORS);
@@ -58,11 +66,11 @@ export const CitizenPortal: React.FC<CitizenPortalProps> = ({
 
   const citizenTabs: { id: CitizenNavTab; label: string; icon: React.ReactNode; badge?: number }[] = [
     { id: 'safe-status', label: 'My Safety Radar', icon: <ShieldCheck class="w-4 h-4" /> },
+    { id: 'near-me', label: 'Near Me', icon: <LocateFixed class="w-4 h-4" /> },
     { id: 'routes', label: 'Highway Corridors', icon: <Car class="w-4 h-4" />, badge: highwayCorridors.filter(h => h.status === 'BLOCKED' || h.status === 'RESTRICTED').length },
     { id: 'report-hazard', label: 'Report Ground Hazard', icon: <AlertTriangle class="w-4 h-4" />, badge: citizenReports.length },
     { id: 'shelters', label: 'Evacuation Shelters', icon: <Building2 class="w-4 h-4" /> },
-    { id: 'guidelines', label: 'Safety Protocols', icon: <LifeBuoy class="w-4 h-4" /> },
-    { id: 'sms-alerts', label: 'Phone SMS Alerts', icon: <Smartphone class="w-4 h-4" /> }
+    { id: 'guidelines', label: 'Safety Protocols', icon: <LifeBuoy class="w-4 h-4" /> }
   ];
 
   const handleReportBlockage = (highwayName: string) => {
@@ -106,16 +114,23 @@ export const CitizenPortal: React.FC<CitizenPortalProps> = ({
 
       {/* Main Tab Content */}
       {activeCitizenTab === 'safe-status' && (
-        <CitizenSafetyStatus
-          locations={locations}
-          selectedDistrict={selectedDistrict}
-          selectedState={selectedState}
-          onSelectDistrict={(dist, st) => {
-            setSelectedDistrict(dist);
-            setSelectedState(st);
-          }}
-          onNavigateToTab={(tab) => setActiveCitizenTab(tab)}
-        />
+        <div class="space-y-4">
+          <CitizenSafetyStatus
+            locations={locations}
+            selectedDistrict={selectedDistrict}
+            selectedState={selectedState}
+            onSelectDistrict={(dist, st) => {
+              setSelectedDistrict(dist);
+              setSelectedState(st);
+            }}
+            onNavigateToTab={(tab) => setActiveCitizenTab(tab)}
+          />
+          <SubscribeForAlerts defaultState={selectedState} defaultDistrict={selectedDistrict} />
+        </div>
+      )}
+
+      {activeCitizenTab === 'near-me' && (
+        <NearMeMap locations={locations} />
       )}
 
       {activeCitizenTab === 'routes' && (
@@ -142,13 +157,6 @@ export const CitizenPortal: React.FC<CitizenPortalProps> = ({
 
       {activeCitizenTab === 'guidelines' && (
         <SafetyGuidelinesView />
-      )}
-
-      {activeCitizenTab === 'sms-alerts' && (
-        <SmsAlertsSubscribe
-          defaultState={selectedState}
-          defaultDistrict={selectedDistrict}
-        />
       )}
 
       {/* Persistent Emergency SOS Strip at bottom of Citizen Panel */}

@@ -332,24 +332,6 @@ export const CitizenSafetyStatus: React.FC<CitizenSafetyStatusProps> = ({
             </div>
           </div>
         </div>
-
-        {/* Card 3: Free Citizen SMS Broadcasts */}
-        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 space-y-3">
-          <div class="flex items-center gap-2 text-cyan-400 font-bold text-sm">
-            <Clock class="w-4 h-4" />
-            <h3>Early Warning Alerts On Mobile</h3>
-          </div>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Register your district to receive automated SMS and WhatsApp warnings when rainfall crosses danger thresholds in your sector.
-          </p>
-          <button
-            onClick={() => onNavigateToTab('sms-alerts')}
-            class="w-full py-2 px-3 rounded-lg bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 border border-cyan-500/40 text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer"
-          >
-            <span>Configure Free SMS Alerts</span>
-            <ChevronRight class="w-3.5 h-3.5" />
-          </button>
-        </div>
       </div>
     </div>
   );

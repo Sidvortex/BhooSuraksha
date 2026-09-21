@@ -16,6 +16,8 @@ createRoot(document.getElementById('root')!).render(
               from the URL - a bare "/*" wildcard would not populate it. */}
           <Route path="/authority/:tab" element={<App />} />
           <Route path="/authority" element={<App />} />
+          <Route path="/citizen/:tab" element={<App />} />
+          <Route path="/citizen" element={<App />} />
           <Route path="/citizen" element={<App />} />
           <Route path="/" element={<App />} />
           <Route path="*" element={<App />} />

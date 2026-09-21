@@ -27,7 +27,7 @@ export const GovNav: React.FC = () => {
   }, []);
 
   return (
-    <header class="sticky top-0 z-50 w-full bg-slate-900 border-b border-slate-800">
+    <header class="sticky top-0 z-[1500] w-full bg-slate-900 border-b border-slate-800">
       {/* Utility strip, like india.gov.in's top bar */}
       <div class="hidden sm:flex items-center justify-end gap-4 px-6 py-1 bg-slate-950 text-xs text-slate-400 border-b border-slate-800">
         <span>Government of India — North Eastern Region Disaster Management</span>
@@ -39,7 +39,7 @@ export const GovNav: React.FC = () => {
             <Landmark class="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 class="font-semibold text-white text-sm">NER LandslideGuard</h1>
+            <h1 class="font-semibold text-white text-sm">BhooSuraksha</h1>
             <p class="text-xs text-slate-400 hidden sm:block">Landslide Risk Monitoring & Early Warning</p>
           </div>
         </Link>
@@ -64,32 +64,32 @@ export const GovNav: React.FC = () => {
             {menuOpen && (
               <div class="absolute right-0 sm:left-0 top-full mt-1 w-56 bg-slate-950 border border-slate-800 rounded-xl shadow-xl py-1.5 text-sm">
                 <Link
-                  to="/citizen"
+                  to="/citizen/safe-status"
                   onClick={() => setMenuOpen(false)}
                   class="block px-3.5 py-2 text-slate-300 hover:bg-slate-800 hover:text-white"
                 >
                   Safety status by district
                 </Link>
                 <Link
-                  to="/citizen"
+                  to="/citizen/near-me"
+                  onClick={() => setMenuOpen(false)}
+                  class="block px-3.5 py-2 text-slate-300 hover:bg-slate-800 hover:text-white"
+                >
+                  Near me (map + emergency contacts)
+                </Link>
+                <Link
+                  to="/citizen/report-hazard"
                   onClick={() => setMenuOpen(false)}
                   class="block px-3.5 py-2 text-slate-300 hover:bg-slate-800 hover:text-white"
                 >
                   Report a hazard
                 </Link>
                 <Link
-                  to="/citizen"
+                  to="/citizen/routes"
                   onClick={() => setMenuOpen(false)}
                   class="block px-3.5 py-2 text-slate-300 hover:bg-slate-800 hover:text-white"
                 >
                   Highway corridor checker
-                </Link>
-                <Link
-                  to="/citizen"
-                  onClick={() => setMenuOpen(false)}
-                  class="block px-3.5 py-2 text-slate-300 hover:bg-slate-800 hover:text-white"
-                >
-                  SMS alert subscription
                 </Link>
               </div>
             )}

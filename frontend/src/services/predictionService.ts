@@ -1,5 +1,5 @@
 /**
- * ML Prediction Service Interface for NER LandslideGuard
+ * ML Prediction Service Interface for BhooSuraksha
  *
  * `runLandslidePrediction()` below now calls the real FastAPI backend
  * (backend/app.py) which loads the trained RandomForest model

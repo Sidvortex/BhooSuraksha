@@ -1,5 +1,5 @@
 /**
- * Unified API Client Abstraction for NER LandslideGuard
+ * Unified API Client Abstraction for BhooSuraksha
  * 
  * Provides clean decoupling between React UI components and backend endpoints.
  * Currently uses high-fidelity client mocks, but can be switched to real REST/FastAPI endpoints
@@ -76,5 +76,36 @@ export const api = {
    */
   async predictLandslide(params: MLPredictionRequest): Promise<MLPredictionResponse> {
     return await runLandslidePrediction(params);
+  },
+
+  /**
+   * POST /api/alerts/notify
+   * Authority-only: dispatches a real notification attempt for a zone.
+   * Requires a valid login token — throws if the backend rejects it.
+   */
+  async notifyAuthorities(locationId: string, token: string): Promise<{
+    status: string;
+    zone_name: string;
+    risk_level: string;
+    subscriber_count: number;
+    note: string;
+  }> {
+    const backendUrl = getBackendUrl();
+    if (!backendUrl) {
+      throw new Error('No backend URL configured. Set one in Settings or on the Login page.');
+    }
+    const res = await fetch(`${backendUrl}/api/alerts/notify`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ location_id: locationId }),
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => null);
+      throw new Error(body?.detail || `Request failed (${res.status})`);
+    }
+    return await res.json();
   }
 };

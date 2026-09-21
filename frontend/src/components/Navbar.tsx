@@ -59,7 +59,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   return (
-    <header class="sticky top-0 z-50 w-full bg-slate-900 border-b border-slate-800">
+    <header class="sticky top-0 z-[1500] w-full bg-slate-900 border-b border-slate-800">
       {/* Upper bar */}
       <div class="px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
         {/* Brand / Logo */}
@@ -70,7 +70,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div>
             <div class="flex items-center gap-2">
               <h1 class="font-semibold text-base tracking-tight text-white whitespace-nowrap">
-                NER LandslideGuard
+                BhooSuraksha
               </h1>
               <span class="px-1.5 py-0.5 rounded text-xs font-medium uppercase tracking-wide bg-amber-500/15 text-amber-400 border border-amber-500/40 hidden xs:inline">
                 Demo
