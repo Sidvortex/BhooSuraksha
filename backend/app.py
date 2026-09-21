@@ -53,6 +53,19 @@ app.add_middleware(
 )
 
 
+@app.on_event("startup")
+def _log_auth_status():
+    # Printed on every startup so "incorrect username or password" is never
+    # a mystery: if this backend has 0 accounts, that's the actual problem,
+    # not a typo. Very common right after a fresh deploy - create_admin.py
+    # has to be run against wherever this backend's storage actually lives
+    # (see auth.py's USING_TURSO note).
+    storage = "Turso" if auth.USING_TURSO else f"local sqlite ({auth.DB_PATH})"
+    user_count = auth.count_users()
+    print(f"[auth] storage: {storage} | registered accounts: {user_count}")
+    if user_count == 0:
+        print("[auth] No accounts exist yet - every login will fail until you run: python create_admin.py <username> <password>")
+
 @app.get("/health")
 def health():
     return {"status": "ok"}

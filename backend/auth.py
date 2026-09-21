@@ -1,10 +1,15 @@
 """
 Authority login system.
 
-Storage: plain sqlite3 by default (backend/data/auth.db, created
-automatically). To use Turso instead, set two environment variables and
-nothing else in this file needs to change conceptually - see the note at
-the bottom of this file for the swap.
+Storage: Turso (production-ready, works on ephemeral deployments like
+Cloud Run) when TURSO_DATABASE_URL and TURSO_AUTH_TOKEN are set; falls
+back to a local sqlite file (backend/data/auth.db) otherwise, which is
+fine for local development but will NOT reliably persist accounts on
+most cloud deployments - most platforms give each instance/restart a
+fresh, empty filesystem. If you've deployed this and logins fail with
+"incorrect username or password" even though you're sure they're right,
+this is almost always why: the account only exists in your local file,
+not wherever the backend is actually running. See SETUP.md.
 
 Passwords are hashed with bcrypt (never stored in plain text). Sessions
 are stateless JWTs signed with AUTH_SECRET (set this env var in
@@ -29,43 +34,96 @@ DB_PATH = os.path.join(os.path.dirname(__file__), "data", "auth.db")
 AUTH_SECRET = os.environ.get("AUTH_SECRET", "dev-only-insecure-secret-change-me")
 TOKEN_TTL_HOURS = 12
 
+TURSO_URL = os.environ.get("TURSO_DATABASE_URL")
+TURSO_TOKEN = os.environ.get("TURSO_AUTH_TOKEN")
+USING_TURSO = bool(TURSO_URL)
 
-def _connect() -> sqlite3.Connection:
-    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
-    conn = sqlite3.connect(DB_PATH)
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE NOT NULL,
-            password_hash TEXT NOT NULL,
-            role TEXT NOT NULL DEFAULT 'authority',
-            created_at TEXT NOT NULL
-        )
-    """)
-    return conn
+_CREATE_TABLE_SQL = """
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        role TEXT NOT NULL DEFAULT 'authority',
+        created_at TEXT NOT NULL
+    )
+"""
+
+
+class _SqliteBackend:
+    """Local file-based storage. Fine for development; not for most
+    cloud deployments (ephemeral filesystems don't persist this)."""
+
+    def _connect(self) -> sqlite3.Connection:
+        os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+        conn = sqlite3.connect(DB_PATH)
+        conn.execute(_CREATE_TABLE_SQL)
+        return conn
+
+    def execute(self, sql: str, params: tuple = ()) -> None:
+        conn = self._connect()
+        try:
+            conn.execute(sql, params)
+            conn.commit()
+        finally:
+            conn.close()
+
+    def fetchone(self, sql: str, params: tuple = ()) -> Optional[tuple]:
+        conn = self._connect()
+        try:
+            return conn.execute(sql, params).fetchone()
+        finally:
+            conn.close()
+
+    def count_users(self) -> int:
+        row = self.fetchone("SELECT COUNT(*) FROM users")
+        return row[0] if row else 0
+
+
+class _TursoBackend:
+    """Turso (libsql) storage - the one that actually survives real
+    deployments, including serverless/ephemeral ones like Cloud Run."""
+
+    def __init__(self):
+        import libsql_client
+        self._libsql_client = libsql_client
+        self._ensure_table()
+
+    def _client(self):
+        return self._libsql_client.create_client_sync(TURSO_URL, auth_token=TURSO_TOKEN)
+
+    def _ensure_table(self) -> None:
+        with self._client() as client:
+            client.execute(_CREATE_TABLE_SQL)
+
+    def execute(self, sql: str, params: tuple = ()) -> None:
+        with self._client() as client:
+            client.execute(sql, list(params))
+
+    def fetchone(self, sql: str, params: tuple = ()) -> Optional[tuple]:
+        with self._client() as client:
+            rs = client.execute(sql, list(params))
+            return tuple(rs.rows[0]) if rs.rows else None
+
+    def count_users(self) -> int:
+        row = self.fetchone("SELECT COUNT(*) FROM users")
+        return row[0] if row else 0
+
+
+_backend = _TursoBackend() if USING_TURSO else _SqliteBackend()
 
 
 def create_user(username: str, password: str, role: str = "authority") -> None:
     password_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
-    conn = _connect()
-    try:
-        conn.execute(
-            "INSERT INTO users (username, password_hash, role, created_at) VALUES (?, ?, ?, ?)",
-            (username, password_hash, role, datetime.now(timezone.utc).isoformat()),
-        )
-        conn.commit()
-    finally:
-        conn.close()
+    _backend.execute(
+        "INSERT INTO users (username, password_hash, role, created_at) VALUES (?, ?, ?, ?)",
+        (username, password_hash, role, datetime.now(timezone.utc).isoformat()),
+    )
 
 
 def verify_login(username: str, password: str) -> Optional[dict]:
-    conn = _connect()
-    try:
-        row = conn.execute(
-            "SELECT id, username, password_hash, role FROM users WHERE username = ?", (username,)
-        ).fetchone()
-    finally:
-        conn.close()
+    row = _backend.fetchone(
+        "SELECT id, username, password_hash, role FROM users WHERE username = ?", (username,)
+    )
     if not row:
         return None
     user_id, uname, password_hash, role = row
@@ -75,16 +133,14 @@ def verify_login(username: str, password: str) -> Optional[dict]:
 
 
 def get_user_by_username(username: str) -> Optional[dict]:
-    conn = _connect()
-    try:
-        row = conn.execute(
-            "SELECT id, username, role FROM users WHERE username = ?", (username,)
-        ).fetchone()
-    finally:
-        conn.close()
+    row = _backend.fetchone("SELECT id, username, role FROM users WHERE username = ?", (username,))
     if not row:
         return None
     return {"id": row[0], "username": row[1], "role": row[2]}
+
+
+def count_users() -> int:
+    return _backend.count_users()
 
 
 def issue_token(user: dict) -> str:
@@ -112,19 +168,3 @@ def require_auth(authorization: Optional[str] = Header(None)) -> dict:
         raise HTTPException(status_code=401, detail="Missing Authorization header")
     token = authorization.removeprefix("Bearer ").strip()
     return decode_token(token)
-
-
-# --- Swapping local sqlite for Turso -----------------------------------
-# Turso databases speak the sqlite wire protocol over libsql. To use your
-# Turso database instead of the local file:
-#   pip install libsql-experimental
-#   Set TURSO_DATABASE_URL and TURSO_AUTH_TOKEN as environment variables.
-#   Replace `_connect()` above with:
-#       import libsql_experimental as libsql
-#       conn = libsql.connect(
-#           os.environ["TURSO_DATABASE_URL"],
-#           auth_token=os.environ["TURSO_AUTH_TOKEN"],
-#       )
-# Everything else in this file (create_user, verify_login, issue_token,
-# decode_token, require_auth) stays the same, since libsql's Python client
-# mirrors the sqlite3 API closely.

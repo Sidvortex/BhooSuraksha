@@ -48,30 +48,52 @@ print(secrets.token_hex(32))"`) — the default is only safe for local
 testing, and using it in production would let anyone forge a valid login
 token.
 
+### "Incorrect username or password" even though you're sure they're right
+
+This almost always means **the account doesn't exist in whatever storage
+the running backend is actually reading** — not a typo. The backend now
+prints exactly this on every startup, so check its logs first:
+
+```
+[auth] storage: local sqlite (/path/to/backend/data/auth.db) | registered accounts: 0
+[auth] No accounts exist yet - every login will fail until you run: python create_admin.py <username> <password>
+```
+
+The most common way to hit this: you ran `create_admin.py` once locally,
+then deployed the backend somewhere — but `auth.db` is (correctly)
+gitignored, so the deployed instance starts with zero accounts. You need
+to run `create_admin.py` again, targeted at wherever the backend is
+actually running (see the Turso section right below — this is exactly
+the problem it solves).
+
 ### Using Turso instead of the local database
 
-You mentioned already using Turso for your blog. The auth system
-(`backend/auth.py`) uses plain sqlite by default, in the same
-sqlite-wire-protocol family Turso speaks. To point it at your Turso
-database instead:
+This is implemented and tested, not just documented — `backend/auth.py`
+automatically switches storage based on environment variables:
 
 ```bash
-pip install libsql-experimental
+pip install libsql-client   # already in requirements.txt
 ```
 
-Then in `auth.py`, replace the `_connect()` function's body with:
-```python
-import libsql_experimental as libsql
-conn = libsql.connect(
-    os.environ["TURSO_DATABASE_URL"],
-    auth_token=os.environ["TURSO_AUTH_TOKEN"],
-)
+Set these two environment variables wherever your backend runs
+(locally, or in your deployment platform's config):
+```bash
+export TURSO_DATABASE_URL="libsql://your-db-name-yourorg.turso.io"
+export TURSO_AUTH_TOKEN="your-turso-token"
 ```
-Everything else (`create_user`, `verify_login`, `issue_token`,
-`decode_token`) stays exactly the same — the API surface matches
-sqlite3 closely enough that nothing else needs to change. Set
-`TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` as environment variables
-wherever you deploy the backend.
+
+That's it — no code changes needed. With those two variables set,
+`auth.py` talks to Turso instead of a local file; without them, it falls
+back to local sqlite automatically. This is the fix for the ephemeral-
+filesystem problem above: Turso is a real persistent database, so
+accounts created with `create_admin.py` survive restarts, redeploys, and
+multiple server instances — a local file does not.
+
+**Recommended workflow**: create your Turso database once, set those two
+env vars in your deployment platform, then run
+`TURSO_DATABASE_URL=... TURSO_AUTH_TOKEN=... python create_admin.py <username> <password>`
+locally (pointed at the same Turso database) whenever you need to add a
+teammate's account — you don't need to redeploy or SSH into anything.
 
 ### If you'd rather use Firebase Auth (Google Cloud) instead
 
@@ -90,7 +112,9 @@ from you to wire it in instead:
 
 Tell me if you want this instead and I'll swap it in — it's a clean
 substitution for `auth.py` and the `Login.tsx` page, not a rewrite of
-anything else.
+anything else. Given you already have a working Turso-backed system
+after this update, I'd only bother with this if you specifically want
+Google sign-in (not just email/password).
 
 ## 4. Using all three models
 
@@ -146,41 +170,124 @@ Subscribe" citizen tab currently, but it doesn't persist anywhere yet.
 Wiring it to `alerts_dispatch.py` end to end is a reasonable next step
 once you've picked a provider.
 
-## 7. Deploying so nothing lags
+## 7. Full deployment, step by step
 
-**Backend** (FastAPI): Render, Railway, or Google Cloud Run all work well
-and are essentially "point at your GitHub repo, it builds and runs."
-Cloud Run is the natural pick since you already have Google Cloud:
+Since you have Google Cloud already, this uses Cloud Run for the backend
+and Vercel for the frontend (Cloud Run doesn't serve static SPAs as
+cleanly as a CDN-based host does — Vercel/Netlify are genuinely better
+suited to that half).
+
+### 7.1 Backend → Google Cloud Run
+
+Needs the `gcloud` CLI installed and logged in (`gcloud auth login`,
+`gcloud config set project <your-project-id>`).
+
 ```bash
 cd backend
-gcloud run deploy landslide-backend --source . --region asia-south1 --allow-unauthenticated
+gcloud run deploy landslide-backend \
+  --source . \
+  --region asia-south1 \
+  --allow-unauthenticated \
+  --set-env-vars AUTH_SECRET="$(python3 -c 'import secrets; print(secrets.token_hex(32))')"
 ```
-(`asia-south1` = Mumbai — pick whichever Google Cloud region is closest
-to your users to cut latency.) Set `AUTH_SECRET` and, if using Turso,
-`TURSO_DATABASE_URL`/`TURSO_AUTH_TOKEN` as environment variables in the
-Cloud Run service config, not committed to the repo.
+(`asia-south1` = Mumbai — the closest Google Cloud region to India,
+matters for latency. `--allow-unauthenticated` means the API endpoints
+are public, which they need to be for the frontend to call them — your
+own auth system, not Cloud Run's, is what actually protects
+`/authority/*`.)
 
-**Frontend**: Vercel or Netlify — both auto-detect Vite, `npm run build`,
-serve the `dist/` folder over a CDN. This is what actually prevents lag:
-static assets served from edge locations near your users, rather than a
-single server.
+This prints a service URL like `https://landslide-backend-xxxxx-el.a.run.app`
+— that's your backend's real address. Verify it:
+```bash
+curl https://landslide-backend-xxxxx-el.a.run.app/health
+```
 
-**Connecting them**: after both are deployed, set the frontend's Settings
-→ Backend URL to your Cloud Run URL, or bake it in as a default via
-`window.ENV_BACKEND_URL` in `index.html` so users don't have to set it
-manually.
+**If you're using Turso** (recommended — see section 3), add those two
+variables to the same deploy command or afterward:
+```bash
+gcloud run services update landslide-backend \
+  --region asia-south1 \
+  --set-env-vars TURSO_DATABASE_URL="libsql://your-db.turso.io",TURSO_AUTH_TOKEN="your-token"
+```
+Then create your first account against that same Turso database from
+your own machine (no need to redeploy):
+```bash
+TURSO_DATABASE_URL="libsql://your-db.turso.io" TURSO_AUTH_TOKEN="your-token" \
+  python create_admin.py yourname yourpassword
+```
 
-**CORS**: `backend/app.py` currently allows all origins
-(`allow_origins=["*"]`). Once you have a real frontend domain, restrict
-it to that domain — leaving it wide open in production is a real
-security gap, not just a style choice.
+**A Cloud Run-specific gotcha**: by default Cloud Run can scale to zero
+and run multiple instances — each one gets its own empty filesystem. If
+you skip the Turso setup and rely on local sqlite here, every cold start
+or scale-up event effectively wipes your accounts. This is the deployed-
+equivalent of the exact bug from section 3 — Turso is the real fix, not
+a nice-to-have.
 
-**What actually causes lag in an app like this**: the map tile requests
-(CARTO/OSM, already fast and free) and the `/api/zones` call scoring 17
-points through a RandomForest on every request — at this scale (17
-points, a few hundred trees) that's milliseconds, not a bottleneck. If
-you scale to thousands of monitored points, cache `/api/zones`'s result
-for a minute or two instead of recomputing on every request.
+### 7.2 Frontend → Vercel
+
+```bash
+cd frontend
+npm install -g vercel   # one-time
+vercel
+```
+Follow the prompts (it auto-detects Vite). For the production deploy:
+```bash
+vercel --prod
+```
+
+Then either:
+- Tell users to set the Backend URL themselves on first login (the field
+  now on the Login page, saved to their browser after that), or
+- Bake in a default so nobody has to: add this to
+  `frontend/index.html`'s `<head>`, before your bundled script tag:
+  ```html
+  <script>window.ENV_BACKEND_URL = "https://landslide-backend-xxxxx-el.a.run.app";</script>
+  ```
+  This makes it the default for everyone, while still letting the Login
+  page's field override it per-browser if needed.
+
+### 7.3 Lock down CORS
+
+`backend/app.py` currently allows all origins (`allow_origins=["*"]`).
+Once you have your real Vercel domain, restrict it:
+```python
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://your-app.vercel.app"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+```
+Leaving it wide open in production is a real security gap (anyone's
+website could call your API from a user's browser), not just a style
+preference — do this before sharing the deployed link widely.
+
+### 7.4 What actually causes lag here, and what doesn't
+
+- Map tiles (CARTO/OSM) — already fast, free, nothing to optimize.
+- `/api/zones` scoring 17 points through a RandomForest per request — at
+  this scale that's single-digit milliseconds, not a bottleneck. If you
+  later monitor thousands of points, cache the result for a minute
+  instead of recomputing on every request.
+- Cloud Run cold starts — if the service scaled to zero and nobody hit
+  it in a while, the first request after that has a few seconds of
+  startup delay (loading the RandomForest pickles). Set
+  `--min-instances 1` on the Cloud Run deploy if this matters for your
+  demo/judging, at the cost of a small always-on charge.
+- The frontend bundle is ~670KB minified — fine for a demo, but if you
+  want to trim it later, code-splitting the map/chart libraries with
+  dynamic `import()` would be the next real lever, not anything in this
+  guide.
+
+### 7.5 Post-deploy checklist
+
+- [ ] `curl https://<backend-url>/health` → `{"status":"ok"}`
+- [ ] `curl https://<backend-url>/api/models` → lists `ner`, `india`, `region`
+- [ ] Backend startup logs show `registered accounts: N` where N ≥ 1
+- [ ] Frontend loads, map tiles render, `/citizen` works with no login
+- [ ] Login with a real account succeeds and lands on `/authority/dashboard`
+- [ ] CORS restricted to your real frontend domain (not `*`)
+- [ ] `AUTH_SECRET` is a random value, not the dev default
 
 ## 8. Team credits
 
