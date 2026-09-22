@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { Info, X, Landmark } from 'lucide-react';
 
 const TEAM = [
-  'Member 1',
-  'Member 2',
-  'Member 3',
-  'Member 4',
-  'Member 5',
-  'Member 6',
+  'Ravada Siddharth',
+  'Arpit Kumar',
+  'Mala Kumari',
+  'Ayush Mishra',
+  'Vidit Sharma',
+  'Vinayak Kapoor',
 ];
 
 export const AboutCredits: React.FC = () => {
