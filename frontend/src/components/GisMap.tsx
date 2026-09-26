@@ -252,7 +252,7 @@ export const GisMap: React.FC<GisMapProps> = ({
 
       const marker = L.marker([loc.latitude, loc.longitude], { icon: customIcon });
 
-      // Interactive Popup
+      // Interactive  Popup
       marker.bindPopup(`
         <div class="text-slate-100 font-sans p-1">
           <div class="flex items-center justify-between border-b border-slate-700 pb-2 mb-2">
