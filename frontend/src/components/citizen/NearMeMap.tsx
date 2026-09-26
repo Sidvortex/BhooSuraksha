@@ -15,9 +15,10 @@ import L from 'leaflet';
 import { MonitoredLocation } from '../../types/landslide';
 import { distanceKm } from '../../utils/geoDistance';
 import { EMERGENCY_HELPLINES } from '../../data/citizenData';
-import { LocateFixed, ShieldAlert, Hospital, Landmark, PhoneCall, AlertCircle, Navigation } from 'lucide-react';
+import { LocateFixed, ShieldAlert, Hospital, Landmark, PhoneCall, AlertCircle, Navigation, Box, Map as MapIcon } from 'lucide-react';
+import { TerrainMap3D, TerrainMarker } from '../TerrainMap3D';
 
-const RADIUS_KM = 40;
+const RADIUS_KM = 100;
 
 type FacilityKind = 'hospital' | 'police' | 'military';
 
@@ -50,6 +51,7 @@ export const NearMeMap: React.FC<NearMeMapProps> = ({ locations }) => {
   const [facilities, setFacilities] = useState<Facility[]>([]);
   const [isLoadingFacilities, setIsLoadingFacilities] = useState(false);
   const [facilitiesError, setFacilitiesError] = useState<string | null>(null);
+  const [is3D, setIs3D] = useState(false);
 
   const requestLocation = () => {
     setLocError(null);
@@ -198,6 +200,45 @@ export const NearMeMap: React.FC<NearMeMapProps> = ({ locations }) => {
     };
   }, []);
 
+  // Leaflet needs an explicit resize nudge after its container goes from
+  // display:none back to visible, or it renders with stale/partial tiles.
+  useEffect(() => {
+    if (!is3D) {
+      const t = setTimeout(() => mapInstanceRef.current?.invalidateSize(), 50);
+      return () => clearTimeout(t);
+    }
+  }, [is3D]);
+
+  // Shared marker list for both the 2D (Leaflet) and 3D (MapLibre) views
+  const terrainMarkers: TerrainMarker[] = userPos
+    ? [
+        {
+          lon: userPos.lon,
+          lat: userPos.lat,
+          color: '#5b93bc',
+          popupHtml: '<strong>Your location</strong>',
+        },
+        ...locations
+          .filter((loc) => distanceKm(userPos.lat, userPos.lon, loc.latitude, loc.longitude) <= RADIUS_KM)
+          .map((loc) => ({
+            lon: loc.longitude,
+            lat: loc.latitude,
+            color:
+              loc.risk_level === 'CRITICAL' ? '#a14c45' :
+              loc.risk_level === 'VERY_HIGH' ? '#e36a5b' :
+              loc.risk_level === 'HIGH' ? '#d29a69' :
+              loc.risk_level === 'MODERATE' ? '#d1b078' : '#65aa88',
+            popupHtml: `<strong>${loc.name}</strong><br/>${loc.district}, ${loc.state}<br/>Risk: ${loc.risk_level.replace('_', ' ')}`,
+          })),
+        ...facilities.map((f) => ({
+          lon: f.lon,
+          lat: f.lat,
+          color: f.kind === 'hospital' ? '#e36a5b' : f.kind === 'police' ? '#5b93bc' : '#65aa88',
+          popupHtml: `<strong>${f.name}</strong><br/>${KIND_META[f.kind].label} &bull; ${f.distanceKm.toFixed(1)} km away`,
+        })),
+      ]
+    : [];
+
   return (
     <div class="space-y-4">
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
@@ -227,7 +268,41 @@ export const NearMeMap: React.FC<NearMeMapProps> = ({ locations }) => {
 
       {userPos && (
         <>
-          <div ref={mapContainerRef} class="w-full h-80 sm:h-96 rounded-xl overflow-hidden border border-slate-800" />
+          <div class="flex items-center justify-end">
+            <div class="inline-flex rounded-lg border border-slate-800 overflow-hidden text-xs">
+              <button
+                id="btn-nearme-view-2d"
+                onClick={() => setIs3D(false)}
+                class={`px-3 py-1.5 flex items-center gap-1.5 transition cursor-pointer ${!is3D ? 'bg-blue-700 text-white' : 'bg-slate-900 text-slate-400 hover:text-white'}`}
+              >
+                <MapIcon class="w-3.5 h-3.5" /> 2D Map
+              </button>
+              <button
+                id="btn-nearme-view-3d"
+                onClick={() => setIs3D(true)}
+                class={`px-3 py-1.5 flex items-center gap-1.5 transition cursor-pointer ${is3D ? 'bg-blue-700 text-white' : 'bg-slate-900 text-slate-400 hover:text-white'}`}
+              >
+                <Box class="w-3.5 h-3.5" /> 3D Terrain
+              </button>
+            </div>
+          </div>
+
+          {is3D ? (
+            <div class="w-full h-80 sm:h-96 rounded-xl overflow-hidden border border-slate-800">
+              <TerrainMap3D
+                centerLon={userPos.lon}
+                centerLat={userPos.lat}
+                zoom={9}
+                markers={terrainMarkers}
+                radiusKm={RADIUS_KM}
+              />
+            </div>
+          ) : null}
+          <div
+            ref={mapContainerRef}
+            style={{ display: is3D ? 'none' : 'block' }}
+            class="w-full h-80 sm:h-96 rounded-xl overflow-hidden border border-slate-800"
+          />
 
           <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
             <h3 class="text-sm font-medium text-white mb-2">Nearby facilities</h3>

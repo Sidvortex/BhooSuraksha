@@ -39,6 +39,30 @@ class NotifyAuthoritiesResponse(BaseModel):
     note: str
 
 
+class FeedbackRequest(BaseModel):
+    name: Optional[str] = None
+    email: Optional[str] = None
+    category: str
+    message: str
+
+
+class FeedbackSubmitResponse(BaseModel):
+    status: str
+
+
+class FeedbackItem(BaseModel):
+    id: int
+    name: Optional[str] = None
+    email: Optional[str] = None
+    category: str
+    message: str
+    created_at: str
+
+
+class FeedbackListResponse(BaseModel):
+    items: List[FeedbackItem]
+
+
 class MLPredictionRequest(BaseModel):
     latitude: float
     longitude: float
