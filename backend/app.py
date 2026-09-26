@@ -17,11 +17,12 @@ Run:
 from datetime import datetime, timezone
 from typing import List
 
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 import auth
 import alerts_dispatch
+import feedback as feedback_module
 import metrics
 import model
 import india_model
@@ -30,6 +31,10 @@ import zones as zones_module
 from schemas import (
     AlertNotification,
     AnalyticsResponse,
+    FeedbackItem,
+    FeedbackListResponse,
+    FeedbackRequest,
+    FeedbackSubmitResponse,
     IndiaPredictionRequest,
     IndiaPredictionResponse,
     LoginRequest,
@@ -122,6 +127,27 @@ def notify_authorities(req: NotifyAuthoritiesRequest, user: dict = Depends(auth.
             "SMS/push provider and a subscribers table."
         ),
     }
+
+
+@app.post("/api/feedback", response_model=FeedbackSubmitResponse)
+def submit_feedback(req: FeedbackRequest, request: Request):
+    """Public endpoint, real rate limiting: max 5 submissions per IP per hour."""
+    client_ip = request.client.host if request.client else "unknown"
+    if feedback_module.is_rate_limited(client_ip):
+        raise HTTPException(
+            status_code=429,
+            detail=f"Too many submissions from this address. Try again in a bit (limit: {feedback_module.RATE_LIMIT_MAX} per hour).",
+        )
+    if not req.message.strip():
+        raise HTTPException(status_code=422, detail="Message cannot be empty")
+    feedback_module.submit_feedback(req.name, req.email, req.category, req.message, client_ip)
+    return {"status": "received"}
+
+
+@app.get("/api/feedback", response_model=FeedbackListResponse)
+def get_feedback(user: dict = Depends(auth.require_auth)):
+    """Authority-only: view submitted feedback."""
+    return {"items": feedback_module.list_feedback()}
 
 
 @app.post("/api/predict", response_model=MLPredictionResponse)
