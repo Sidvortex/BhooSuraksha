@@ -305,7 +305,7 @@ export default function App() {
             citizenReportsCount={citizenReports.length}
           />
         )}
-        <main class="flex-1 min-w-0 max-w-7xl w-full mx-auto p-3 sm:p-5 space-y-5">
+        <main id="main-content" class="flex-1 min-w-0 max-w-7xl w-full mx-auto p-3 sm:p-5 space-y-5">
         {/* MANDATORY PROTOTYPE ADVISORY BANNER */}
         <div class="bg-slate-900/60 border border-slate-800/80 rounded-xl px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
           <div class="flex items-center gap-2 text-slate-300">

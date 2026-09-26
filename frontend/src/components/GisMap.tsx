@@ -6,6 +6,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import { MonitoredLocation, NerState, RiskLevel } from '../types/landslide';
+import { TerrainMap3D, TerrainMarker } from './TerrainMap3D';
 import { 
   ShieldAlert, 
   Layers, 
@@ -15,7 +16,9 @@ import {
   Maximize2, 
   Sliders, 
   MapPin, 
-  AlertTriangle 
+  AlertTriangle,
+  Box,
+  Map as MapIcon
 } from 'lucide-react';
 
 interface GisMapProps {
@@ -60,6 +63,7 @@ export const GisMap: React.FC<GisMapProps> = ({
   const [showGeofences, setShowGeofences] = useState(true);
   const [mapTileStyle, setMapTileStyle] = useState<'dark' | 'topo'>('dark');
   const [showRadiusControl, setShowRadiusControl] = useState(false);
+  const [is3D, setIs3D] = useState(false);
 
   // Helper color mappings for risk levels
   const getRiskColor = (prob: number) => {
@@ -309,6 +313,25 @@ export const GisMap: React.FC<GisMapProps> = ({
     });
   }, [filteredLocations, selectedLocation, showGeofences, globalGeofenceRadiusKm, onSelectLocation]);
 
+  // Leaflet needs an explicit resize nudge after its container goes from
+  // display:none back to visible (when toggling out of 3D mode), or it
+  // renders with stale/partial tiles.
+  useEffect(() => {
+    if (!is3D) {
+      const t = setTimeout(() => mapInstanceRef.current?.invalidateSize(), 50);
+      return () => clearTimeout(t);
+    }
+  }, [is3D]);
+
+  // Marker list shared with the 3D terrain view
+  const terrainMarkers: TerrainMarker[] = filteredLocations.map((loc) => ({
+    lon: loc.longitude,
+    lat: loc.latitude,
+    color: getRiskColor(loc.risk_probability),
+    popupHtml: `<strong>${loc.name}</strong><br/>${loc.district}, ${loc.state}<br/>Risk: ${loc.risk_level.replace('_', ' ')} (${Math.round(loc.risk_probability * 100)}%)`,
+  }));
+
+
   // Pan to selected location if it changes
   useEffect(() => {
     if (!selectedLocation || !mapInstanceRef.current) return;
@@ -443,10 +466,36 @@ export const GisMap: React.FC<GisMapProps> = ({
         >
           <Layers class="w-4 h-4 text-emerald-400" />
         </button>
+        <button
+          id="btn-toggle-3d-terrain"
+          onClick={() => setIs3D(!is3D)}
+          class={`p-2 rounded-lg border shadow-lg backdrop-blur transition cursor-pointer ${
+            is3D ? 'bg-blue-700 border-blue-600 text-white' : 'bg-slate-900/90 border-slate-700 text-slate-300 hover:text-white'
+          }`}
+          title={is3D ? 'Switch to 2D map' : 'Switch to 3D terrain'}
+        >
+          {is3D ? <MapIcon class="w-4 h-4" /> : <Box class="w-4 h-4 text-blue-400" />}
+        </button>
       </div>
 
-      {/* Map Canvas Container */}
-      <div ref={mapContainerRef} class="w-full h-full min-h-[500px] flex-1 z-0" />
+      {/* Map Canvas Container: both mounted permanently, toggled via
+          display:none so neither Leaflet's nor MapLibre's instance gets
+          torn down and re-created on every switch. */}
+      {is3D && (
+        <div class="w-full h-full min-h-[500px] flex-1 z-0">
+          <TerrainMap3D
+            centerLon={92.9}
+            centerLat={26.2}
+            zoom={7}
+            markers={terrainMarkers}
+          />
+        </div>
+      )}
+      <div
+        ref={mapContainerRef}
+        style={{ display: is3D ? 'none' : 'block' }}
+        class="w-full h-full min-h-[500px] flex-1 z-0"
+      />
 
       {/* Map Legend (Bottom Left) */}
       <div class="absolute bottom-3 left-3 z-[1000] bg-slate-950/90 border border-slate-800/90 rounded-xl p-2.5 backdrop-blur shadow-2xl text-xs max-w-xs">

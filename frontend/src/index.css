@@ -179,3 +179,75 @@
   animation: radar-sweep 4s linear infinite;
 }
 
+
+/* ---- Real accessibility toolbar effects (src/context/A11yContext.tsx) ---- */
+:root {
+  --a11y-font-scale: 1;
+}
+html {
+  font-size: calc(16px * var(--a11y-font-scale));
+}
+
+.a11y-high-contrast {
+  filter: contrast(1.35) saturate(1.15);
+}
+.a11y-high-contrast body {
+  background: #000 !important;
+}
+
+.a11y-big-cursor,
+.a11y-big-cursor * {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"><path d="M2 2l7.6 20 2.3-8.1L20 11.6z" fill="black" stroke="white" stroke-width="1.5"/></svg>') 4 4, auto !important;
+}
+
+.a11y-highlight-links a {
+  outline: 2px solid #d1b078 !important;
+  outline-offset: 2px;
+  background: rgba(209, 176, 120, 0.12) !important;
+}
+
+.a11y-dyslexia-font,
+.a11y-dyslexia-font * {
+  font-family: 'Comic Sans MS', 'Comic Sans', 'Andika', sans-serif !important;
+  letter-spacing: 0.02em;
+}
+
+.a11y-extra-line-height,
+.a11y-extra-line-height p,
+.a11y-extra-line-height li,
+.a11y-extra-line-height span {
+  line-height: 1.9 !important;
+}
+
+.a11y-extra-letter-spacing,
+.a11y-extra-letter-spacing p,
+.a11y-extra-letter-spacing li,
+.a11y-extra-letter-spacing span {
+  letter-spacing: 0.06em !important;
+  word-spacing: 0.12em !important;
+}
+
+.a11y-reduce-motion *,
+.a11y-reduce-motion *::before,
+.a11y-reduce-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}
+
+/* Skip-to-content link: visually hidden until focused via Tab */
+.skip-to-content {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 3000;
+  background: #4a7a9e;
+  color: white;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.skip-to-content:focus {
+  left: 0;
+}

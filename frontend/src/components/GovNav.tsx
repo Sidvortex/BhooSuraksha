@@ -9,9 +9,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Landmark, ChevronDown, LogIn, LogOut, ShieldAlert } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 export const GovNav: React.FC = () => {
   const { isAuthenticated, user, logout } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -39,8 +41,8 @@ export const GovNav: React.FC = () => {
             <Landmark class="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 class="font-semibold text-white text-sm">BhooSuraksha</h1>
-            <p class="text-xs text-slate-400 hidden sm:block">Landslide Risk Monitoring & Early Warning</p>
+            <h1 class="font-semibold text-white text-sm">{t('brand.name')}</h1>
+            <p class="text-xs text-slate-400 hidden sm:block">{t('brand.tagline')}</p>
           </div>
         </Link>
 
@@ -49,7 +51,7 @@ export const GovNav: React.FC = () => {
             to="/"
             class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition"
           >
-            Home
+            {t('nav.home')}
           </Link>
 
           {/* Citizen Services dropdown */}
@@ -59,7 +61,7 @@ export const GovNav: React.FC = () => {
               onClick={() => setMenuOpen((v) => !v)}
               class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-1 cursor-pointer"
             >
-              Citizen Services <ChevronDown class="w-3.5 h-3.5" />
+              {t('nav.citizenServices')} <ChevronDown class="w-3.5 h-3.5" />
             </button>
             {menuOpen && (
               <div class="absolute right-0 sm:left-0 top-full mt-1 w-56 bg-slate-950 border border-slate-800 rounded-xl shadow-xl py-1.5 text-sm">
@@ -105,7 +107,7 @@ export const GovNav: React.FC = () => {
                 class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-700 hover:bg-blue-600 text-white transition cursor-pointer"
               >
                 <ShieldAlert class="w-3.5 h-3.5" />
-                Authority Dashboard
+                {t('auth.dashboard')}
               </button>
               <button
                 id="btn-govnav-logout"
@@ -114,7 +116,7 @@ export const GovNav: React.FC = () => {
                 title={`Signed in as ${user?.username}`}
               >
                 <LogOut class="w-3.5 h-3.5" />
-                <span class="hidden sm:inline">Logout</span>
+                <span class="hidden sm:inline">{t('nav.logout')}</span>
               </button>
             </>
           ) : (
@@ -124,7 +126,7 @@ export const GovNav: React.FC = () => {
               class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 transition cursor-pointer"
             >
               <LogIn class="w-3.5 h-3.5" />
-              Login
+              {t('nav.login')}
             </button>
           )}
         </div>

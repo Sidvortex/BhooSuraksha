@@ -66,18 +66,41 @@ each with real hold-out metrics shown in the Model Performance tab.
   integration code for MSG91/Twilio/Firebase push, not wired to a live
   account since that needs your credentials — see SETUP.md's alerts
   section for the concrete trade-offs.
+- **3D terrain maps**: both the Authority Risk Map and the public Near
+  Me map now have a 2D/3D toggle (MapLibre GL + free AWS terrain tiles,
+  no API key). Verified with a real headless-browser test, not just
+  "should work" — see SETUP.md §9.
+- **Public map radius: 40km → 100km**, one constant, drives the map
+  zoom, the nearby-facility search, and the zone filter together.
+- **Accessibility toolbar**: real, working toggles (high contrast, big
+  cursor, link highlighting, reading-friendly font, line/letter spacing,
+  reduced motion, font size) — every one drives actual CSS, not
+  decoration. Lives in the top utility bar (not a floating button, which
+  used to physically collide with the Authority sidebar).
+- **Language toggle** (English/हिंदी) with a first-visit chooser, for
+  navigation/header copy — see SETUP.md §11 for the honest scope note
+  on what's translated and what isn't yet.
+- **Feedback system**: a real public form with real rate limiting
+  (5/hour/IP, backend-enforced, verified live), stored the same way
+  auth accounts are.
+- **Contact & Sitemap pages**.
 
 ## What's real vs. still a placeholder
 
 ✓ Real: all three trained models, live zone/alert/analytics scoring, the
-map (free tiles, no key), the AI assistant (local rule-based, not an
-LLM), and now real authentication.
+map (free tiles, no key, now with a verified 3D mode), the AI assistant
+(local rule-based, not an LLM), real authentication, and the accessibility/
+feedback/rate-limiting systems described above.
 
 ✗ Still placeholder: live rainfall/soil-moisture/NDVI ingestion, a
 production spatial database (Turso swap-in documented but not required),
 actual SMS/push delivery (integration code is real, provider account is
-not yet connected), and Firebase Auth (documented as an alternative, not
-implemented — the current system is a real, working bcrypt+JWT login).
+not yet connected), Firebase Auth (documented as an alternative, not
+implemented), and full-app Hindi translation (navigation/headers are
+real; most page content isn't translated yet). One pre-existing issue
+worth knowing about: the whole codebase uses `class=` instead of React's
+`className=` in JSX — cosmetically harmless (renders fine) but not
+technically correct; see SETUP.md §12 for the fix if you want it.
 
 ## Setup
 

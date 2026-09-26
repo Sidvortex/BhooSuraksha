@@ -296,3 +296,84 @@ bottom-left of every page, opening a modal styled as a small "regional
 disaster-preparedness initiative" credit. I put in placeholder names
 (`Member 1`...`Member 6`) since I don't have your teammates' real names —
 open that file and edit the `TEAM` array with the actual six names.
+`frontend/src/pages/Contact.tsx` has the same placeholder pattern with
+email/GitHub/LinkedIn fields — update `TEAM_CONTACTS` there too.
+
+## 9. 3D terrain maps (both public and admin)
+
+Both the Authority Risk Map (`GisMap.tsx`) and the public Near Me map
+(`NearMeMap.tsx`) now have a 2D/3D toggle, sharing one component
+(`TerrainMap3D.tsx`) built with MapLibre GL JS — the open-source fork of
+Mapbox GL from before Mapbox went closed-source, so no API key needed.
+
+Data sources (both free, no key, no account):
+- Base imagery: the same OpenStreetMap raster tiles the 2D map uses
+- Terrain elevation: AWS's public Terrarium DEM tiles (AWS Open Data
+  program) — this is what actually drives the 3D extrusion, so real
+  Himalayan slopes render as real slopes
+
+This was verified with an actual headless-browser test (Playwright): the
+2D↔3D toggle switches correctly, markers render at the right coordinates,
+MapLibre's own zoom/pitch controls work, and there are no JavaScript
+errors on either the public or admin map. Tile *imagery* itself couldn't
+be visually confirmed from the sandbox this was built in (its network
+egress blocks the tile domains), but the code path, requests, and control
+behavior are all confirmed correct — a real browser with normal internet
+access will show full terrain and imagery.
+
+Note: MapLibre GL is a genuinely heavy dependency — it roughly doubled
+the frontend's JS bundle size (from ~190KB to ~485KB gzipped). Worth
+knowing if bundle size ever becomes a concern; code-splitting it behind
+a dynamic `import()` so it only loads when someone actually opens the 3D
+view would be the fix, not currently done.
+
+## 10. Public map radius: now 100km
+
+`NearMeMap.tsx`'s `RADIUS_KM` constant went from 40 to 100 — this drives
+the map's zoom/framing, the Overpass API facility search radius, and the
+monitored-zone distance filter, all from one place.
+
+## 11. Accessibility toolbar, language toggle, feedback system
+
+- **Accessibility tools** (top utility bar → "Accessibility"): high
+  contrast, big cursor, link highlighting, a reading-friendly font, extra
+  line height/letter spacing, reduced motion, and font-size (A-/A/A+) —
+  every toggle drives a real CSS class/variable
+  (`frontend/src/context/A11yContext.tsx`), persisted in localStorage.
+  This replaced an earlier version that floated as a fixed button and
+  physically overlapped the Authority sidebar's "Settings" nav item —
+  moved into the normal document flow specifically to fix that.
+- **Language toggle** (English/हिंदी), including a first-visit chooser
+  modal. Scope note, stated plainly: this translates navigation, headers,
+  and the highest-visibility labels — not every string in the app.
+  Translating everything (every form label and helper sentence across
+  ~30 components) is a much bigger job than wiring the mechanism; what's
+  here is verified working for its actual scope
+  (`frontend/src/context/LanguageContext.tsx`'s `DICTIONARY`), and ready
+  to extend — add a key to `DICTIONARY` and call `t('your.key')` anywhere.
+- **Feedback system**: a real public form (`/feedback`) posting to
+  `POST /api/feedback`, stored in the same sqlite/Turso pattern as
+  `auth.py`, with real rate limiting (5 submissions per IP per hour,
+  verified live: the 6th attempt in a row gets HTTP 429). Authority-only
+  `GET /api/feedback` to review submissions (not yet in the UI — the data
+  is there, a page to browse it isn't built yet).
+- **Contact Us and Sitemap pages** (`/contact`, `/sitemap`), linked from
+  the top utility bar.
+
+## 12. One thing I found while testing, not yet fixed
+
+Running a real headless-browser check on this project (see section 9)
+surfaced something worth knowing: **every component in this codebase
+uses `class="..."` in JSX instead of React's `className="..."`.** This
+predates this session's changes — it's been there since the original
+scaffold. React logs a console warning for every element ("Invalid DOM
+property `class`. Did you mean `className`?") but the app still renders
+correctly, because React passes unrecognized lowercase attributes through
+to the DOM directly, and browsers apply a literal `class` attribute
+identically to `className` for CSS purposes. So visually nothing is
+broken — but it's technically wrong React, it spams the browser console,
+and some tooling (certain linters, some testing utilities) assumes
+`className` is used. Fixing it is a mechanical, low-risk, whole-codebase
+find/replace (`class="` → `className="`, `class={` → `className={`)
+across every `.tsx` file — I didn't do it in this pass since it wasn't
+part of what was asked, but it's a quick, safe follow-up if you want it.

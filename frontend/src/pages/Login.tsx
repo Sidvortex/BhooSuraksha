@@ -23,7 +23,7 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div class="min-h-screen bg-slate-900 text-slate-100 flex items-center justify-center px-4">
+    <div id="main-content" class="min-h-screen bg-slate-900 text-slate-100 flex items-center justify-center px-4">
       <div class="w-full max-w-sm">
         <div class="flex items-center gap-3 mb-6 justify-center">
           <div class="w-10 h-10 rounded-lg bg-blue-700 flex items-center justify-center">
