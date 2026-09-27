@@ -16,7 +16,7 @@ import { MonitoredLocation } from '../../types/landslide';
 import { distanceKm } from '../../utils/geoDistance';
 import { EMERGENCY_HELPLINES } from '../../data/citizenData';
 import { LocateFixed, ShieldAlert, Hospital, Landmark, PhoneCall, AlertCircle, Navigation, Box, Map as MapIcon } from 'lucide-react';
-import { TerrainMap3D, TerrainMarker } from '../TerrainMap3D';
+import { TerrainMap3D, TerrainMarker, TERRAIN_3D_HINT } from '../TerrainMap3D';
 
 const RADIUS_KM = 100;
 
@@ -129,7 +129,6 @@ export const NearMeMap: React.FC<NearMeMapProps> = ({ locations }) => {
         maxZoom: 18,
         subdomains: 'abc',
       }).addTo(map);
-      map.getContainer().classList.add('map-dark-mode');
       layerRef.current = L.layerGroup().addTo(map);
       mapInstanceRef.current = map;
     }
@@ -228,6 +227,7 @@ export const NearMeMap: React.FC<NearMeMapProps> = ({ locations }) => {
               loc.risk_level === 'VERY_HIGH' ? '#e36a5b' :
               loc.risk_level === 'HIGH' ? '#d29a69' :
               loc.risk_level === 'MODERATE' ? '#d1b078' : '#65aa88',
+            weight: loc.risk_probability,
             popupHtml: `<strong>${loc.name}</strong><br/>${loc.district}, ${loc.state}<br/>Risk: ${loc.risk_level.replace('_', ' ')}`,
           })),
         ...facilities.map((f) => ({
@@ -242,7 +242,7 @@ export const NearMeMap: React.FC<NearMeMapProps> = ({ locations }) => {
   return (
     <div class="space-y-4">
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
-        <h2 class="text-sm font-medium text-white flex items-center gap-2 mb-1">
+        <h2 class="text-sm font-medium text-slate-50 flex items-center gap-2 mb-1">
           <LocateFixed class="w-4 h-4 text-blue-400" />
           What's Near Me ({RADIUS_KM} km)
         </h2>
@@ -273,14 +273,14 @@ export const NearMeMap: React.FC<NearMeMapProps> = ({ locations }) => {
               <button
                 id="btn-nearme-view-2d"
                 onClick={() => setIs3D(false)}
-                class={`px-3 py-1.5 flex items-center gap-1.5 transition cursor-pointer ${!is3D ? 'bg-blue-700 text-white' : 'bg-slate-900 text-slate-400 hover:text-white'}`}
+                class={`px-3 py-1.5 flex items-center gap-1.5 transition cursor-pointer ${!is3D ? 'bg-blue-700 text-white' : 'bg-slate-900 text-slate-400 hover:text-slate-50'}`}
               >
                 <MapIcon class="w-3.5 h-3.5" /> 2D Map
               </button>
               <button
                 id="btn-nearme-view-3d"
                 onClick={() => setIs3D(true)}
-                class={`px-3 py-1.5 flex items-center gap-1.5 transition cursor-pointer ${is3D ? 'bg-blue-700 text-white' : 'bg-slate-900 text-slate-400 hover:text-white'}`}
+                class={`px-3 py-1.5 flex items-center gap-1.5 transition cursor-pointer ${is3D ? 'bg-blue-700 text-white' : 'bg-slate-900 text-slate-400 hover:text-slate-50'}`}
               >
                 <Box class="w-3.5 h-3.5" /> 3D Terrain
               </button>
@@ -298,6 +298,7 @@ export const NearMeMap: React.FC<NearMeMapProps> = ({ locations }) => {
               />
             </div>
           ) : null}
+          {is3D && <p class="text-xs text-slate-400 -mt-2">{TERRAIN_3D_HINT}</p>}
           <div
             ref={mapContainerRef}
             style={{ display: is3D ? 'none' : 'block' }}
@@ -305,7 +306,7 @@ export const NearMeMap: React.FC<NearMeMapProps> = ({ locations }) => {
           />
 
           <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
-            <h3 class="text-sm font-medium text-white mb-2">Nearby facilities</h3>
+            <h3 class="text-sm font-medium text-slate-50 mb-2">Nearby facilities</h3>
             {isLoadingFacilities && <p class="text-xs text-slate-400">Looking up nearby facilities...</p>}
             {facilitiesError && <p class="text-xs text-amber-300">{facilitiesError}</p>}
             {!isLoadingFacilities && !facilitiesError && facilities.length === 0 && (
@@ -338,7 +339,7 @@ export const NearMeMap: React.FC<NearMeMapProps> = ({ locations }) => {
       )}
 
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
-        <h3 class="text-sm font-medium text-white flex items-center gap-2 mb-2">
+        <h3 class="text-sm font-medium text-slate-50 flex items-center gap-2 mb-2">
           <PhoneCall class="w-4 h-4 text-red-400" />
           National & State Emergency Helplines
         </h3>
@@ -354,7 +355,7 @@ export const NearMeMap: React.FC<NearMeMapProps> = ({ locations }) => {
                 <span class="text-slate-200 block">{hl.service}</span>
                 <span class="text-slate-500">{hl.description}</span>
               </div>
-              <span class="text-white font-mono font-medium">{hl.number}</span>
+              <span class="text-slate-50 font-mono font-medium">{hl.number}</span>
             </a>
           ))}
         </div>

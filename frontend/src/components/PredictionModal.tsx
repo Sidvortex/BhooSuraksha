@@ -187,7 +187,7 @@ export const PredictionModal: React.FC<PredictionModalProps> = ({
             </div>
             <div>
               <div class="flex items-center gap-2">
-                <h3 class="text-lg font-bold text-white">
+                <h3 class="text-lg font-bold text-slate-50">
                   Machine Learning Prediction & Parameter Simulator
                 </h3>
                 <span class="px-2 py-0.5 rounded text-xs font-mono uppercase bg-amber-500/20 text-amber-300 border border-amber-500/40">
@@ -202,7 +202,7 @@ export const PredictionModal: React.FC<PredictionModalProps> = ({
           <button
             id="btn-close-prediction-modal"
             onClick={onClose}
-            class="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition cursor-pointer"
+            class="p-1.5 text-slate-400 hover:text-slate-50 rounded-lg hover:bg-slate-800 transition cursor-pointer"
           >
             <X class="w-5 h-5" />
           </button>
@@ -451,7 +451,7 @@ export const PredictionModal: React.FC<PredictionModalProps> = ({
                     <div>
                       <span class="text-xs uppercase font-bold text-slate-400">Model Output Result</span>
                       <div class="flex items-baseline gap-2">
-                        <span class="text-2xl font-bold font-mono text-white">
+                        <span class="text-2xl font-bold font-mono text-slate-50">
                           {Math.round(predictionResult.probability * 100)}%
                         </span>
                         <span class={`px-2 py-0.5 rounded text-xs font-bold font-mono ${
@@ -467,7 +467,7 @@ export const PredictionModal: React.FC<PredictionModalProps> = ({
                     </div>
 
                     <div class="text-right">
-                      <span class="text-xs text-slate-400 block">Confidence: <strong class="text-white">{Math.round(predictionResult.confidence * 100)}%</strong></span>
+                      <span class="text-xs text-slate-400 block">Confidence: <strong class="text-slate-50">{Math.round(predictionResult.confidence * 100)}%</strong></span>
                       <span class="text-xs text-slate-400 font-mono">{predictionResult.timestamp}</span>
                     </div>
                   </div>
@@ -554,7 +554,7 @@ export const PredictionModal: React.FC<PredictionModalProps> = ({
                         <div>
                           <span class="text-xs uppercase font-bold text-slate-400">Model Output Result</span>
                           <div class="flex items-baseline gap-2">
-                            <span class="text-2xl font-bold font-mono text-white">
+                            <span class="text-2xl font-bold font-mono text-slate-50">
                               {Math.round(indiaResult.probability * 100)}%
                             </span>
                             <span class={`px-2 py-0.5 rounded text-xs font-bold font-mono ${
@@ -569,7 +569,7 @@ export const PredictionModal: React.FC<PredictionModalProps> = ({
                           </div>
                         </div>
                         <div class="text-right">
-                          <span class="text-xs text-slate-400 block">Confidence: <strong class="text-white">{Math.round(indiaResult.confidence * 100)}%</strong></span>
+                          <span class="text-xs text-slate-400 block">Confidence: <strong class="text-slate-50">{Math.round(indiaResult.confidence * 100)}%</strong></span>
                           <span class="text-xs text-slate-400 font-mono">{indiaResult.state}, month {indiaResult.month}</span>
                         </div>
                       </div>
@@ -608,7 +608,7 @@ export const PredictionModal: React.FC<PredictionModalProps> = ({
                   {availableModels.map((m) => (
                     <div key={m.id} class="p-4 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2.5">
                       <div>
-                        <span class="text-sm font-bold text-white block">{m.name}</span>
+                        <span class="text-sm font-bold text-slate-50 block">{m.name}</span>
                         <span class="text-xs text-slate-400">{m.description}</span>
                       </div>
                       <div class="grid grid-cols-2 gap-2 text-xs font-mono">

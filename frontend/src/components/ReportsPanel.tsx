@@ -119,7 +119,7 @@ Predictions represent automated algorithmic evaluations.
             <FileText class="w-6 h-6" />
           </div>
           <div>
-            <h2 class="text-lg font-bold text-white">Daily Bulletins & Situation Briefings</h2>
+            <h2 class="text-lg font-bold text-slate-50">Daily Bulletins & Situation Briefings</h2>
             <p class="text-xs text-slate-400">
               Export geospatial hazard logs, emergency alerts, and inter-agency coordination dossiers
             </p>

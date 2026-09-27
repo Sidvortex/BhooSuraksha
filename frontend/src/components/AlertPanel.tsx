@@ -76,7 +76,7 @@ export const AlertPanel: React.FC<AlertPanelProps> = ({
             class={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
               activeView === 'ALERTS'
                 ? 'bg-rose-600 text-white shadow-lg'
-                : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+                : 'bg-slate-900 text-slate-400 hover:text-slate-50 border border-slate-800'
             }`}
           >
             <Bell class="w-4 h-4" />
@@ -88,7 +88,7 @@ export const AlertPanel: React.FC<AlertPanelProps> = ({
             class={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
               activeView === 'CITIZEN_REPORTS'
                 ? 'bg-amber-600 text-white shadow-lg'
-                : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+                : 'bg-slate-900 text-slate-400 hover:text-slate-50 border border-slate-800'
             }`}
           >
             <Users class="w-4 h-4" />
@@ -110,7 +110,7 @@ export const AlertPanel: React.FC<AlertPanelProps> = ({
                 <Bell class="w-6 h-6 animate-bounce" style={{ animationDuration: '3s' }} />
               </div>
               <div>
-                <h2 class="text-lg font-bold text-white">Emergency Warning System & Alert Log</h2>
+                <h2 class="text-lg font-bold text-slate-50">Emergency Warning System & Alert Log</h2>
                 <p class="text-xs text-slate-400">
                   Automated notifications generated whenever ML landslide probability crosses the 70% (High) or 85% (Critical) threshold
                 </p>
@@ -125,7 +125,7 @@ export const AlertPanel: React.FC<AlertPanelProps> = ({
                 class={`px-3 py-1.5 rounded-lg font-semibold transition cursor-pointer ${
                   severityFilter === 'ALL'
                     ? 'bg-rose-600 text-white shadow'
-                    : 'text-slate-400 hover:text-white'
+                    : 'text-slate-400 hover:text-slate-50'
                 }`}
               >
                 All ({alerts.length})
@@ -194,7 +194,7 @@ export const AlertPanel: React.FC<AlertPanelProps> = ({
                         </div>
                         <div>
                           <div class="flex items-center gap-2">
-                            <span class="font-extrabold text-sm text-white">{alert.locationName}</span>
+                            <span class="font-extrabold text-sm text-slate-50">{alert.locationName}</span>
                             <span class="text-xs text-slate-400 font-mono">({alert.district}, {alert.state})</span>
                           </div>
                           <div class="flex items-center gap-2 text-xs text-slate-400 mt-0.5">
@@ -277,7 +277,7 @@ export const AlertPanel: React.FC<AlertPanelProps> = ({
                               id={`btn-notify-authorities-${alert.id}`}
                               onClick={() => handleNotify(alert.locationId)}
                               disabled={notifyState[alert.locationId]?.status === 'loading'}
-                              class="px-2.5 py-1 rounded bg-blue-800 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-medium flex items-center gap-1.5 transition cursor-pointer"
+                              class="px-2.5 py-1 rounded bg-blue-800 hover:bg-blue-700 disabled:opacity-50 text-slate-50 text-xs font-medium flex items-center gap-1.5 transition cursor-pointer"
                             >
                               {notifyState[alert.locationId]?.status === 'loading' ? (
                                 <Loader2 class="w-3.5 h-3.5 animate-spin" />
@@ -318,7 +318,7 @@ export const AlertPanel: React.FC<AlertPanelProps> = ({
         <div class="space-y-4">
           <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center justify-between">
             <div>
-              <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <h3 class="text-base font-bold text-slate-50 flex items-center gap-2">
                 <Users class="w-5 h-5 text-amber-400" />
                 <span>Crowdsourced Ground Observations from Public & Observers</span>
               </h3>
@@ -351,7 +351,7 @@ export const AlertPanel: React.FC<AlertPanelProps> = ({
                         <span class="text-slate-600">•</span>
                         <span class="text-amber-400 font-bold">{rep.hazardType.replace(/_/g, ' ')}</span>
                       </div>
-                      <h4 class="text-base font-bold text-white mt-0.5">{rep.locationName}</h4>
+                      <h4 class="text-base font-bold text-slate-50 mt-0.5">{rep.locationName}</h4>
                     </div>
 
                     <div class="flex items-center gap-2">
@@ -371,7 +371,7 @@ export const AlertPanel: React.FC<AlertPanelProps> = ({
 
                   <div class="flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
                     <div class="flex items-center gap-4">
-                      <span>Reporter: <strong class="text-white">{rep.reporterName}</strong> ({rep.reporterPhone})</span>
+                      <span>Reporter: <strong class="text-slate-50">{rep.reporterName}</strong> ({rep.reporterPhone})</span>
                       <span>Time: {rep.timestamp}</span>
                       <span>Landmark: {rep.nearestLandmark || 'N/A'}</span>
                     </div>

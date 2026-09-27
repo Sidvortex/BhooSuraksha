@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "routes_after_blockage",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"xy_coordinate_resolution": 1e-06,
+"features": [
+{ "type": "Feature", "properties": { "facility": "Veterinary Firsy Aid Centre [895569]", "minutes": 54.3, "scenario": "after_simulated_blockage" }, "geometry": { "type": "LineString", "coordinates": [ [ 93.019992, 25.183735 ], [ 93.012657, 25.201024 ], [ 93.003628, 25.216964 ], [ 93.005023, 25.221734 ], [ 93.005025, 25.221744 ], [ 92.972676, 25.205811 ], [ 92.965142, 25.203357 ], [ 92.965139, 25.203358 ] ] } }
+]
+}

@@ -112,7 +112,7 @@ export const CitizenReportHazard: React.FC<CitizenReportHazardProps> = ({
             <AlertTriangle class="w-4 h-4" />
             COMMUNITY EARLY WARNING NETWORK
           </div>
-          <h2 class="text-xl font-bold text-white">
+          <h2 class="text-xl font-bold text-slate-50">
             Report Hillside Cracks, Mudflow, or Slope Movement
           </h2>
           <p class="text-xs sm:text-sm text-slate-400 max-w-2xl mt-1">
@@ -121,7 +121,7 @@ export const CitizenReportHazard: React.FC<CitizenReportHazardProps> = ({
         </div>
 
         <div class="px-3.5 py-2 rounded-xl bg-rose-950/60 border border-rose-800/80 text-rose-300 text-xs font-mono">
-          <span>Active Community Submissions: <strong class="text-white">{reports.length} Reports</strong></span>
+          <span>Active Community Submissions: <strong class="text-slate-50">{reports.length} Reports</strong></span>
         </div>
       </div>
 
@@ -141,7 +141,7 @@ export const CitizenReportHazard: React.FC<CitizenReportHazardProps> = ({
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Reporting Form (7 cols) */}
         <div class="lg:col-span-7 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-5">
-          <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <h3 class="text-base font-bold text-slate-50 flex items-center gap-2">
             <span>Submit New Hazard Observation</span>
             <span class="text-xs font-mono font-normal text-slate-400">Step 1 of 1</span>
           </h3>
@@ -160,7 +160,7 @@ export const CitizenReportHazard: React.FC<CitizenReportHazardProps> = ({
                     onClick={() => setHazardType(opt.type)}
                     class={`p-2.5 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between ${
                       hazardType === opt.type
-                        ? 'bg-rose-950/80 border-rose-500 text-white shadow-sm'
+                        ? 'bg-rose-950/80 border-rose-500 text-slate-50 shadow-sm'
                         : 'bg-slate-950 border-slate-800 text-slate-300 hover:border-slate-700'
                     }`}
                   >
@@ -183,7 +183,7 @@ export const CitizenReportHazard: React.FC<CitizenReportHazardProps> = ({
                 <select
                   value={state}
                   onChange={(e) => setState(e.target.value as NerState)}
-                  class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-rose-500"
+                  class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-50 focus:outline-none focus:border-rose-500"
                 >
                   {nerStates.map(st => (
                     <option key={st} value={st}>{st}</option>
@@ -198,7 +198,7 @@ export const CitizenReportHazard: React.FC<CitizenReportHazardProps> = ({
                   value={district}
                   onChange={(e) => setDistrict(e.target.value)}
                   placeholder="e.g. Papum Pare, Pakyong, East Khasi Hills"
-                  class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-rose-500"
+                  class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-50 placeholder-slate-500 focus:outline-none focus:border-rose-500"
                   required
                 />
               </div>
@@ -213,7 +213,7 @@ export const CitizenReportHazard: React.FC<CitizenReportHazardProps> = ({
                   value={locationName}
                   onChange={(e) => setLocationName(e.target.value)}
                   placeholder="e.g. KM 34 on Highway, Nirjuli Hilltop, Upper Shillong"
-                  class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-rose-500"
+                  class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-50 placeholder-slate-500 focus:outline-none focus:border-rose-500"
                   required
                 />
               </div>
@@ -225,7 +225,7 @@ export const CitizenReportHazard: React.FC<CitizenReportHazardProps> = ({
                   value={nearestLandmark}
                   onChange={(e) => setNearestLandmark(e.target.value)}
                   placeholder="e.g. Near petrol pump, culvert #14, church compound"
-                  class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-rose-500"
+                  class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-50 placeholder-slate-500 focus:outline-none focus:border-rose-500"
                 />
               </div>
             </div>
@@ -246,7 +246,7 @@ export const CitizenReportHazard: React.FC<CitizenReportHazardProps> = ({
                     onClick={() => setSeverity(s.id as any)}
                     class={`p-2 rounded-xl border text-center transition cursor-pointer ${
                       severity === s.id
-                        ? 'bg-slate-800 text-white font-bold border-rose-500'
+                        ? 'bg-slate-800 text-slate-50 font-bold border-rose-500'
                         : 'bg-slate-950/80 text-slate-400 border-slate-800'
                     }`}
                   >
@@ -266,7 +266,7 @@ export const CitizenReportHazard: React.FC<CitizenReportHazardProps> = ({
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Describe size of cracks, whether water is bubbling out, whether boulders are falling onto road, any families in immediate downhill path..."
                 rows={3}
-                class="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-rose-500 leading-relaxed"
+                class="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-50 placeholder-slate-500 focus:outline-none focus:border-rose-500 leading-relaxed"
                 required
               />
             </div>
@@ -280,7 +280,7 @@ export const CitizenReportHazard: React.FC<CitizenReportHazardProps> = ({
                   value={reporterName}
                   onChange={(e) => setReporterName(e.target.value)}
                   placeholder="Leave blank for anonymous report"
-                  class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-600 focus:outline-none"
+                  class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-50 placeholder-slate-600 focus:outline-none"
                 />
               </div>
 
@@ -291,7 +291,7 @@ export const CitizenReportHazard: React.FC<CitizenReportHazardProps> = ({
                   value={reporterPhone}
                   onChange={(e) => setReporterPhone(e.target.value)}
                   placeholder="+91 98XXX XXXXX"
-                  class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-600 focus:outline-none"
+                  class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-50 placeholder-slate-600 focus:outline-none"
                 />
               </div>
             </div>
@@ -323,7 +323,7 @@ export const CitizenReportHazard: React.FC<CitizenReportHazardProps> = ({
         {/* Right Column: Live Community Reports Feed (5 cols) */}
         <div class="lg:col-span-5 space-y-4">
           <div class="flex items-center justify-between">
-            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+            <h3 class="text-sm font-bold text-slate-50 flex items-center gap-2">
               <ShieldCheck class="w-4 h-4 text-emerald-400" />
               <span>Community Ground Feed</span>
             </h3>
@@ -345,7 +345,7 @@ export const CitizenReportHazard: React.FC<CitizenReportHazardProps> = ({
                       <span class="text-slate-600">•</span>
                       <span class="text-slate-400">{rep.district}</span>
                     </div>
-                    <h4 class="text-sm font-extrabold text-white">
+                    <h4 class="text-sm font-extrabold text-slate-50">
                       {rep.locationName}
                     </h4>
                   </div>

@@ -6,10 +6,14 @@ import { Login } from './pages/Login.tsx';
 import { Feedback } from './pages/Feedback.tsx';
 import { Contact } from './pages/Contact.tsx';
 import { Sitemap } from './pages/Sitemap.tsx';
+import { Home } from './pages/Home.tsx';
 import { GlobalChrome } from './components/GlobalChrome.tsx';
 import { AuthProvider } from './context/AuthContext.tsx';
 import { LanguageProvider } from './context/LanguageContext.tsx';
 import { A11yProvider } from './context/A11yContext.tsx';
+// Leaflet's stylesheet is bundled from npm rather than loaded from a CDN, so
+// maps still work on slow or offline connections (and if the CDN is blocked).
+import 'leaflet/dist/leaflet.css';
 import './index.css';
 
 createRoot(document.getElementById('root')!).render(
@@ -30,7 +34,7 @@ createRoot(document.getElementById('root')!).render(
                 <Route path="/authority" element={<App />} />
                 <Route path="/citizen/:tab" element={<App />} />
                 <Route path="/citizen" element={<App />} />
-                <Route path="/" element={<App />} />
+                <Route path="/" element={<Home />} />
                 <Route path="*" element={<App />} />
               </Route>
             </Routes>

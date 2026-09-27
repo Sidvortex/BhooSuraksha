@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { GovNav } from '../components/GovNav';
-import { Map } from 'lucide-react';
+import { PageBanner } from '../components/gov/PageBanner';
 
 const SECTIONS: { title: string; links: { label: string; to: string }[] }[] = [
   {
@@ -40,13 +40,10 @@ const SECTIONS: { title: string; links: { label: string; to: string }[] }[] = [
 
 export const Sitemap: React.FC = () => {
   return (
-    <div class="min-h-screen bg-slate-900 text-slate-100">
+    <div class="flex-1 bg-gov-page text-slate-100">
       <GovNav />
+      <PageBanner title="Sitemap" crumbs={[{ label: 'Sitemap' }]} />
       <main id="main-content" class="max-w-2xl mx-auto p-5 sm:p-8 space-y-6">
-        <h1 class="text-lg font-semibold text-white flex items-center gap-2">
-          <Map class="w-5 h-5 text-blue-400" />
-          Sitemap
-        </h1>
 
         {SECTIONS.map((section) => (
           <section key={section.title}>
@@ -54,7 +51,7 @@ export const Sitemap: React.FC = () => {
             <ul class="bg-slate-950/60 border border-slate-800 rounded-xl divide-y divide-slate-800">
               {section.links.map((link) => (
                 <li key={link.to}>
-                  <Link to={link.to} class="block px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-900 hover:text-white transition">
+                  <Link to={link.to} class="block px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-900 hover:text-slate-50 transition">
                     {link.label}
                   </Link>
                 </li>

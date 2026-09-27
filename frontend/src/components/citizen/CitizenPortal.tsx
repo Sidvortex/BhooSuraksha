@@ -94,7 +94,7 @@ export const CitizenPortal: React.FC<CitizenPortalProps> = ({
                 class={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-medium transition whitespace-nowrap cursor-pointer ${
                   isActive
                     ? 'bg-teal-700 text-white'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    : 'text-slate-400 hover:text-slate-50 hover:bg-slate-800'
                 }`}
               >
                 {tab.icon}
@@ -166,7 +166,7 @@ export const CitizenPortal: React.FC<CitizenPortalProps> = ({
             <PhoneCall class="w-5 h-5" />
           </div>
           <div>
-            <h4 class="text-sm font-extrabold text-white">
+            <h4 class="text-sm font-extrabold text-slate-50">
               Immediate Landslide Emergency or Trapped Citizens?
             </h4>
             <p class="text-xs text-slate-300">

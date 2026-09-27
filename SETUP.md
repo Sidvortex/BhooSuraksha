@@ -291,41 +291,45 @@ preference — do this before sharing the deployed link widely.
 
 ## 8. Team credits
 
-`frontend/src/components/AboutCredits.tsx` has a floating (i) icon,
-bottom-left of every page, opening a modal styled as a small "regional
-disaster-preparedness initiative" credit. I put in placeholder names
-(`Member 1`...`Member 6`) since I don't have your teammates' real names —
-open that file and edit the `TEAM` array with the actual six names.
-`frontend/src/pages/Contact.tsx` has the same placeholder pattern with
-email/GitHub/LinkedIn fields — update `TEAM_CONTACTS` there too.
+The six team members (names, roles, email/GitHub/LinkedIn/portfolio) live
+in one file, `frontend/src/data/team.ts`, which feeds both the floating (i)
+About modal (bottom-left on every page) and the Contact page. Edit that
+file and both update.
 
-## 9. 3D terrain maps (both public and admin)
+## 9. 3D maps (both public and admin)
 
-Both the Authority Risk Map (`GisMap.tsx`) and the public Near Me map
-(`NearMeMap.tsx`) now have a 2D/3D toggle, sharing one component
-(`TerrainMap3D.tsx`) built with MapLibre GL JS — the open-source fork of
-Mapbox GL from before Mapbox went closed-source, so no API key needed.
+Both the Authority Risk Map and the public Near Me map have a 2D/3D toggle,
+sharing one component (`TerrainMap3D.tsx`, MapLibre GL). The 3D view shows:
 
-Data sources (both free, no key, no account):
-- Base imagery: the same OpenStreetMap raster tiles the 2D map uses
-- Terrain elevation: AWS's public Terrarium DEM tiles (AWS Open Data
-  program) — this is what actually drives the 3D extrusion, so real
-  Himalayan slopes render as real slopes
+- a vector base map (roads, rivers, place names) from **OpenFreeMap**
+  (`liberty` style — free, no API key, no sign-up)
+- **3D buildings** extruded from OpenStreetMap heights — zoom into a town
+  (~zoom 14+) to see them. Coverage follows OpenStreetMap: good in cities
+  like Guwahati and Shillong, sparse in remote villages; buildings with no
+  height tag get a default height.
+- **real terrain relief + hillshading** from AWS Terrarium elevation tiles
+- **risk zones as 3D columns** — height and colour track risk probability;
+  columns shrink as you zoom in so buildings stay readable
 
-This was verified with an actual headless-browser test (Playwright): the
-2D↔3D toggle switches correctly, markers render at the right coordinates,
-MapLibre's own zoom/pitch controls work, and there are no JavaScript
-errors on either the public or admin map. Tile *imagery* itself couldn't
-be visually confirmed from the sandbox this was built in (its network
-egress blocks the tile domains), but the code path, requests, and control
-behavior are all confirmed correct — a real browser with normal internet
-access will show full terrain and imagery.
+Two bugs fixed along the way, worth knowing about:
 
-Note: MapLibre GL is a genuinely heavy dependency — it roughly doubled
-the frontend's JS bundle size (from ~190KB to ~485KB gzipped). Worth
-knowing if bundle size ever becomes a concern; code-splitting it behind
-a dynamic `import()` so it only loads when someone actually opens the 3D
-view would be the fix, not currently done.
+- **The maplibre web worker 404'd** in both `npm run dev` and production
+  builds (the "file does not exist ... optimize deps" warning). maplibre
+  locates its worker at runtime from a string, which bundlers can't see.
+  The worker is what builds terrain, so 3D terrain was silently never
+  rendering — the map was just tilted. Fixed by bundling it explicitly
+  (`?worker&url` import + `setWorkerUrl`, and `worker.format: 'es'` in
+  `vite.config.ts`). Verified: worker loads (HTTP 200) in dev and in the
+  production build.
+- **3D layers were set up on MapLibre's `load` event**, which waits for
+  *every* initial tile. On a slow or flaky connection one stalled tile
+  meant terrain and risk columns never appeared. Now uses `style.load`.
+
+Testing note: the sandbox these changes were built in blocks the tile
+domains, so imagery couldn't be seen there. What was verified with a real
+headless browser: terrain on, hillshade and 3D-building layers added,
+risk columns built (17 on the admin map, the in-radius zones on Near Me),
+no JavaScript errors, and no control overlap.
 
 ## 10. Public map radius: now 100km
 
@@ -377,3 +381,34 @@ and some tooling (certain linters, some testing utilities) assumes
 find/replace (`class="` → `className="`, `class={` → `className={`)
 across every `.tsx` file — I didn't do it in this pass since it wasn't
 part of what was asked, but it's a quick, safe follow-up if you want it.
+
+## 13. Theme and links
+
+- The light gov theme lives in one place: the `@theme` block at the top of
+  `frontend/src/index.css`. Gov identity colours are `gov-navy`,
+  `gov-saffron`, `gov-green`, `gov-page`; the standard Tailwind scales are
+  remapped for a light UI there too.
+- External links (repo, docs, ISRO Landslide Atlas, NDMA) live in
+  `frontend/src/data/links.ts`. **`REPO_URL` assumes the repo will be
+  `github.com/Sidvortex/bhoosuraksha`** — change it if the real repo name
+  differs, and the header, utility bar and footer all update.
+
+## 14. Route Planner data
+
+The Route Planner (backend/logistics.py) loads the road network from
+`backend/data/networks/dima_hasao/` at startup (~3 s). Those files are copies
+of `data-pipeline/data/processed/dima_hasao/`. After re-running the pipeline
+(new GeoSadak data, different tolerance), copy them across again:
+
+```bash
+cp data-pipeline/data/processed/dima_hasao/{network.graphml,roads_network.geojson,facilities.geojson,habitations.geojson,network_report.json} backend/data/networks/dima_hasao/
+```
+
+New backend dependencies: `networkx`, `shapely`, `pyproj` (already in
+`requirements.txt`). Deploying to Cloud Run works as before: the network files
+are inside `backend/`, so `gcloud run deploy --source backend` includes them.
+
+Also changed: Leaflet's CSS is now bundled from npm (imported in `main.tsx`)
+instead of loaded from the unpkg CDN. Without it the map layers stack wrongly
+and roads can't be clicked, so it shouldn't depend on a third-party server —
+especially for low-network areas.

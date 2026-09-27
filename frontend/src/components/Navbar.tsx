@@ -8,9 +8,10 @@
 
 import React from 'react';
 import { ActiveNavTab } from '../types/landslide';
+import { BrandMark } from './gov/BrandMark';
 import {
-  ShieldAlert,
   LayoutDashboard,
+  Route,
   Activity,
   Map,
   Bell,
@@ -50,6 +51,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const navItems: { id: ActiveNavTab; label: string; icon: React.ReactNode; badge?: number }[] = [
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard class="w-4 h-4" /> },
+    { id: 'route-planner', label: 'Route Planner', icon: <Route class="w-4 h-4" /> },
     { id: 'monitoring', label: 'Live Monitoring', icon: <Activity class="w-4 h-4" /> },
     { id: 'risk-map', label: 'Risk Map', icon: <Map class="w-4 h-4" /> },
     { id: 'alerts', label: 'Alerts', icon: <Bell class="w-4 h-4" />, badge: activeAlertsCount + citizenReportsCount },
@@ -59,24 +61,25 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   return (
-    <header class="sticky top-0 z-[1500] w-full bg-slate-900 border-b border-slate-800">
+    <header class="sticky top-0 z-[1500] w-full">
+      <div class="flex h-1"><div class="flex-1 bg-gov-saffron" /><div class="flex-1 bg-white" /><div class="flex-1 bg-gov-green" /></div>
       {/* Upper bar */}
-      <div class="px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+      <div class="px-4 sm:px-6 h-16 flex items-center justify-between gap-3 bg-gov-navy text-white">
         {/* Brand / Logo */}
         <div class="flex items-center gap-3">
-          <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-blue-700 shrink-0">
-            <ShieldAlert class="w-5 h-5 text-white" />
+          <div class="flex items-center justify-center w-9 h-9 rounded bg-white shrink-0">
+            <BrandMark size={30} />
           </div>
           <div>
             <div class="flex items-center gap-2">
               <h1 class="font-semibold text-base tracking-tight text-white whitespace-nowrap">
                 BhooSuraksha
               </h1>
-              <span class="px-1.5 py-0.5 rounded text-xs font-medium uppercase tracking-wide bg-amber-500/15 text-amber-400 border border-amber-500/40 hidden xs:inline">
+              <span class="px-1.5 py-0.5 rounded text-xs font-medium uppercase tracking-wide bg-gov-saffron text-gov-navy-dark hidden xs:inline">
                 Demo
               </span>
             </div>
-            <p class="text-xs text-slate-400 hidden sm:block truncate max-w-xs">
+            <p class="text-xs text-white/70 hidden sm:block truncate max-w-xs">
               Authority Command Center
             </p>
           </div>
@@ -89,8 +92,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={onToggleSimulation}
             class={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition cursor-pointer ${
               isSimulating
-                ? 'bg-emerald-950/60 border-emerald-800 text-emerald-300'
-                : 'bg-slate-800 border-slate-700 text-slate-400 hover:text-white'
+                ? 'bg-gov-green border-gov-green text-white'
+                : 'bg-white/10 border-white/25 text-white/80 hover:text-white'
             }`}
             title={isSimulating ? 'Pause simulated live sensor updates' : 'Start live sensor simulation stream'}
           >
@@ -110,28 +113,28 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             id="btn-run-prediction-header"
             onClick={onOpenPredictionModal}
-            class="flex items-center gap-1.5 px-3 py-1.5 bg-blue-700 hover:bg-blue-600 text-white rounded-lg text-xs font-medium transition cursor-pointer"
+            class="flex items-center gap-1.5 px-3 py-1.5 bg-gov-saffron hover:brightness-105 text-gov-navy-dark rounded-lg text-xs font-semibold transition cursor-pointer"
           >
             <Activity class="w-3.5 h-3.5" />
             <span class="hidden sm:inline">Run Prediction</span>
           </button>
 
-          <div class="w-px h-6 bg-slate-700 mx-0.5 hidden sm:block" />
+          <div class="w-px h-6 bg-white/25 mx-0.5 hidden sm:block" />
 
           <button
             id="btn-exit-to-gateway"
             onClick={onExitToGateway}
-            class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white/80 hover:text-white hover:bg-white/10 transition cursor-pointer"
             title="Return to portal selection"
           >
             <LogOut class="w-3.5 h-3.5" />
-            <span class="hidden sm:inline">Change Portal</span>
+            <span class="hidden sm:inline">Logout</span>
           </button>
         </div>
       </div>
 
       {/* Mobile-only tab strip (desktop navigation lives in the sidebar) */}
-      <div class="md:hidden px-4 py-2 bg-slate-950/40 border-t border-slate-800 flex items-center gap-1 overflow-x-auto text-xs">
+      <div class="md:hidden px-4 py-2 bg-white border-b border-slate-800 flex items-center gap-1 overflow-x-auto text-xs">
         {navItems.map((item) => {
           const isActive = activeTab === item.id;
           return (

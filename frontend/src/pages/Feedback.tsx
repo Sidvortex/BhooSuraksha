@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { GovNav } from '../components/GovNav';
-import { MessageSquareText, Send, CheckCircle2 } from 'lucide-react';
+import { PageBanner } from '../components/gov/PageBanner';
+import { Send, CheckCircle2 } from 'lucide-react';
 import { getBackendUrl } from '../utils/backendUrl';
 
 const CATEGORIES = ['Bug report', 'Feature suggestion', 'Data accuracy concern', 'General feedback'];
@@ -41,13 +42,10 @@ export const Feedback: React.FC = () => {
   };
 
   return (
-    <div class="min-h-screen bg-slate-900 text-slate-100">
+    <div class="flex-1 bg-gov-page text-slate-100">
       <GovNav />
+      <PageBanner title="Feedback" crumbs={[{ label: 'Feedback' }]} />
       <main id="main-content" class="max-w-xl mx-auto p-5 sm:p-8">
-        <h1 class="text-lg font-semibold text-white flex items-center gap-2 mb-1">
-          <MessageSquareText class="w-5 h-5 text-teal-400" />
-          Feedback
-        </h1>
         <p class="text-sm text-slate-400 mb-5">
           Found a bug, have a suggestion, or spotted something inaccurate? Tell us — this goes
           straight to a real database the project team reviews, not a black hole.
@@ -57,7 +55,7 @@ export const Feedback: React.FC = () => {
           <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex items-start gap-3">
             <CheckCircle2 class="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
             <div class="text-sm text-slate-300">
-              <span class="text-white font-medium block mb-1">Thanks — received.</span>
+              <span class="text-slate-50 font-medium block mb-1">Thanks — received.</span>
               We don't have a way to reply unless you left an email.
             </div>
           </div>

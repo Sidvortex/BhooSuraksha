@@ -42,7 +42,7 @@ export const SubscribeForAlerts: React.FC<SubscribeForAlertsProps> = ({
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-start gap-3">
         <CheckCircle2 class="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
         <div class="text-xs text-slate-300">
-          <span class="text-white font-medium block mb-0.5">You're on the list</span>
+          <span class="text-slate-50 font-medium block mb-0.5">You're on the list</span>
           {phoneNumber} will be notified for {district ? `${district}, ` : ''}{state} once alert
           delivery is connected (see the note below).
         </div>
@@ -52,7 +52,7 @@ export const SubscribeForAlerts: React.FC<SubscribeForAlertsProps> = ({
 
   return (
     <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
-      <h3 class="text-sm font-medium text-white flex items-center gap-2 mb-1">
+      <h3 class="text-sm font-medium text-slate-50 flex items-center gap-2 mb-1">
         <BellRing class="w-4 h-4 text-teal-400" />
         Subscribe for Alerts
       </h3>

@@ -51,7 +51,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
             <Settings class="w-6 h-6" />
           </div>
           <div>
-            <h2 class="text-lg font-bold text-white">System Settings & Threshold Configuration</h2>
+            <h2 class="text-lg font-bold text-slate-50">System Settings & Threshold Configuration</h2>
             <p class="text-xs text-slate-400">
               Configure automated geofencing rules, API hooks, and operational notification parameters
             </p>

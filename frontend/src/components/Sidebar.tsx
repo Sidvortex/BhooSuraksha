@@ -9,6 +9,7 @@ import React from 'react';
 import { ActiveNavTab } from '../types/landslide';
 import {
   LayoutDashboard,
+  Route,
   Activity,
   Map,
   Bell,
@@ -38,6 +39,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const navItems: { id: ActiveNavTab; label: string; icon: React.ReactNode; badge?: number }[] = [
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard class="w-4 h-4" /> },
+    { id: 'route-planner', label: 'Route Planner', icon: <Route class="w-4 h-4" /> },
     { id: 'monitoring', label: 'Live Monitoring', icon: <Activity class="w-4 h-4" /> },
     { id: 'risk-map', label: 'Risk Map', icon: <Map class="w-4 h-4" /> },
     { id: 'alerts', label: 'Alerts & Reports', icon: <Bell class="w-4 h-4" />, badge: activeAlertsCount + citizenReportsCount },
@@ -80,7 +82,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div class="p-3 border-t border-slate-800 space-y-1.5 text-xs font-mono">
         <div class="flex items-center justify-between text-slate-400">
           <span>Monitored</span>
-          <strong class="text-white">{totalMonitoredCount}</strong>
+          <strong class="text-slate-50">{totalMonitoredCount}</strong>
         </div>
         <div class="flex items-center justify-between text-orange-300">
           <span>High risk</span>

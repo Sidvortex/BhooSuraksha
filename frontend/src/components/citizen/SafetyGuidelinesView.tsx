@@ -47,7 +47,7 @@ export const SafetyGuidelinesView: React.FC = () => {
             <LifeBuoy class="w-4 h-4" />
             OFFICIAL NDMA / SDMA CITIZEN SURVIVAL PROTOCOL
           </div>
-          <h2 class="text-xl font-bold text-white">
+          <h2 class="text-xl font-bold text-slate-50">
             Landslide Preparedness & Emergency Action Guide
           </h2>
           <p class="text-xs sm:text-sm text-slate-400 max-w-2xl mt-1">
@@ -68,7 +68,7 @@ export const SafetyGuidelinesView: React.FC = () => {
       <div class="bg-indigo-950/40 border border-indigo-900/60 rounded-2xl p-6 shadow-xl space-y-4">
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
-            <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <h3 class="text-base font-bold text-slate-50 flex items-center gap-2">
               <CheckSquare class="w-5 h-5 text-indigo-400" />
               <span>72-Hour Monsoon Emergency Grab Bag Checklist</span>
             </h3>
@@ -99,7 +99,7 @@ export const SafetyGuidelinesView: React.FC = () => {
                 onClick={() => toggleCheck(item.key)}
                 class={`p-3 rounded-xl border flex items-center gap-2.5 transition cursor-pointer select-none ${
                   isChecked
-                    ? 'bg-indigo-950/60 border-indigo-500/80 text-white'
+                    ? 'bg-indigo-950/60 border-indigo-500/80 text-slate-50'
                     : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:border-slate-700'
                 }`}
               >
@@ -162,7 +162,7 @@ export const SafetyGuidelinesView: React.FC = () => {
 
       {/* Warning Signs Guide */}
       <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 space-y-4">
-        <h3 class="text-base font-bold text-white flex items-center gap-2">
+        <h3 class="text-base font-bold text-slate-50 flex items-center gap-2">
           <AlertTriangle class="w-5 h-5 text-amber-400" />
           <span>Recognizing Early Warning Signs on Hill Slopes</span>
         </h3>
@@ -185,7 +185,7 @@ export const SafetyGuidelinesView: React.FC = () => {
 
       {/* Emergency Helplines Directory */}
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
-        <h3 class="text-base font-bold text-white flex items-center gap-2">
+        <h3 class="text-base font-bold text-slate-50 flex items-center gap-2">
           <PhoneCall class="w-5 h-5 text-rose-400" />
           <span>National & Regional Emergency Helplines (Click to Call)</span>
         </h3>
@@ -198,7 +198,7 @@ export const SafetyGuidelinesView: React.FC = () => {
               class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 transition flex items-center justify-between gap-3 group"
             >
               <div>
-                <h4 class="font-bold text-xs text-white group-hover:text-rose-400 transition">
+                <h4 class="font-bold text-xs text-slate-50 group-hover:text-rose-400 transition">
                   {hl.service}
                 </h4>
                 <p class="text-xs text-slate-400 mt-0.5">

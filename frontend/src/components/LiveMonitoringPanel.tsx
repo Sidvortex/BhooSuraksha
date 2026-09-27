@@ -60,7 +60,7 @@ export const LiveMonitoringPanel: React.FC<LiveMonitoringPanelProps> = ({
                 POLLING 10s
               </span>
             </div>
-            <h2 class="text-lg font-bold text-white">{selectedLocation.name}</h2>
+            <h2 class="text-lg font-bold text-slate-50">{selectedLocation.name}</h2>
             <p class="text-xs text-slate-400">
               {selectedLocation.district} District, {selectedLocation.state} • Elev. {p.elevation}m ASL • Lat {selectedLocation.latitude.toFixed(3)}°, Lng {selectedLocation.longitude.toFixed(3)}°
             </p>
@@ -218,9 +218,9 @@ export const LiveMonitoringPanel: React.FC<LiveMonitoringPanelProps> = ({
             </span>
             <span class={`text-xs font-mono px-2 py-0.5 rounded font-bold ${
               prob >= 0.85 
-                ? 'bg-red-900 text-white animate-pulse' 
+                ? 'bg-red-900 text-slate-50 animate-pulse' 
                 : prob >= 0.70 
-                  ? 'bg-orange-900 text-white' 
+                  ? 'bg-orange-900 text-slate-50' 
                   : 'bg-slate-800 text-slate-300'
             }`}>
               {selectedLocation.risk_level.replace('_', ' ')}
@@ -228,7 +228,7 @@ export const LiveMonitoringPanel: React.FC<LiveMonitoringPanelProps> = ({
           </div>
           <div class="my-2">
             <div class="flex items-baseline gap-2">
-              <span class="text-3xl font-bold font-mono text-white">
+              <span class="text-3xl font-bold font-mono text-slate-50">
                 {Math.round(prob * 100)}%
               </span>
               <span class="text-xs text-slate-400 font-mono">ML Output</span>
@@ -261,7 +261,7 @@ export const LiveMonitoringPanel: React.FC<LiveMonitoringPanelProps> = ({
             </span>
           </div>
           <p class="text-xs text-slate-300 mb-3">
-            Formation: <strong class="text-white">{p.land_use}</strong>
+            Formation: <strong class="text-slate-50">{p.land_use}</strong>
           </p>
           <div class="text-xs text-slate-400 space-y-1.5 font-mono">
             <div class="flex justify-between">
@@ -313,7 +313,7 @@ export const LiveMonitoringPanel: React.FC<LiveMonitoringPanelProps> = ({
             </span>
           </div>
           <p class="text-xs text-slate-300 mb-2">
-            Estimated Population in Threat Cone: <strong class="text-white">{selectedLocation.population_exposure.toLocaleString()} persons</strong>
+            Estimated Population in Threat Cone: <strong class="text-slate-50">{selectedLocation.population_exposure.toLocaleString()} persons</strong>
           </p>
           <div class="p-2 rounded bg-slate-950/60 border border-slate-800 text-xs text-slate-400">
             <span class="text-slate-400 block text-xs">Lifeline Infrastructure:</span>

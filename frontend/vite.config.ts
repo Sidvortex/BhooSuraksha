@@ -6,6 +6,11 @@ import {defineConfig} from 'vite';
 export default defineConfig(() => {
   return {
     plugins: [react(), tailwindcss()],
+    // Bundle web workers as ES modules: maplibre's worker (see
+    // TerrainMap3D.tsx) imports a shared chunk and is started as a module worker.
+    worker: {
+      format: 'es' as const,
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),

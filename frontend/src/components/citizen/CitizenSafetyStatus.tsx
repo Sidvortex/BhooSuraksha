@@ -119,7 +119,7 @@ export const CitizenSafetyStatus: React.FC<CitizenSafetyStatusProps> = ({
             <span class="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">
               YOUR MONITORED LOCATION
             </span>
-            <h2 class="text-lg font-extrabold text-white flex items-center gap-2">
+            <h2 class="text-lg font-extrabold text-slate-50 flex items-center gap-2">
               {selectedDistrict}, {selectedState}
               <span class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-mono font-normal">
                 Active Station Nearby
@@ -196,7 +196,7 @@ export const CitizenSafetyStatus: React.FC<CitizenSafetyStatusProps> = ({
               )}
             </div>
 
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-50 tracking-tight leading-tight">
               {isCritical
                 ? 'Imminent Landslide Risk in Your Sector – Evacuate Vulnerable Slopes'
                 : isHigh
@@ -222,22 +222,22 @@ export const CitizenSafetyStatus: React.FC<CitizenSafetyStatusProps> = ({
                 <div class="px-3 py-1.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center gap-2 text-xs">
                   <CloudRain class="w-4 h-4 text-cyan-400" />
                   <span class="text-slate-400 font-mono">24h Rainfall:</span>
-                  <span class="font-mono font-bold text-white">{highestRiskZone.parameters.rainfall_24h} mm</span>
+                  <span class="font-mono font-bold text-slate-50">{highestRiskZone.parameters.rainfall_24h} mm</span>
                 </div>
                 <div class="px-3 py-1.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center gap-2 text-xs">
                   <Droplets class="w-4 h-4 text-sky-400" />
                   <span class="text-slate-400 font-mono">Soil Moisture:</span>
-                  <span class="font-mono font-bold text-white">{highestRiskZone.parameters.soil_moisture}%</span>
+                  <span class="font-mono font-bold text-slate-50">{highestRiskZone.parameters.soil_moisture}%</span>
                 </div>
                 <div class="px-3 py-1.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center gap-2 text-xs">
                   <Compass class="w-4 h-4 text-amber-400" />
                   <span class="text-slate-400 font-mono">Slope Angle:</span>
-                  <span class="font-mono font-bold text-white">{highestRiskZone.parameters.slope}°</span>
+                  <span class="font-mono font-bold text-slate-50">{highestRiskZone.parameters.slope}°</span>
                 </div>
                 <div class="px-3 py-1.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center gap-2 text-xs">
                   <Navigation class="w-4 h-4 text-rose-400" />
                   <span class="text-slate-400 font-mono">Geofence Radius:</span>
-                  <span class="font-mono font-bold text-white">{highestRiskZone.geofence_radius_km || 3.5} km</span>
+                  <span class="font-mono font-bold text-slate-50">{highestRiskZone.geofence_radius_km || 3.5} km</span>
                 </div>
               </div>
             )}

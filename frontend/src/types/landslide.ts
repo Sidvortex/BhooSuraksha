@@ -190,6 +190,7 @@ export interface DashboardContext {
 
 export type ActiveNavTab =
   | 'dashboard'
+  | 'route-planner'
   | 'monitoring'
   | 'risk-map'
   | 'alerts'

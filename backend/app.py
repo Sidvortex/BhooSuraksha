@@ -26,6 +26,7 @@ import feedback as feedback_module
 import metrics
 import model
 import india_model
+import logistics
 import region_model
 import zones as zones_module
 from schemas import (
@@ -49,6 +50,7 @@ from schemas import (
 )
 
 app = FastAPI(title="BhooSuraksha API")
+app.include_router(logistics.router)
 
 # The dashboard is a static SPA that may be served from any origin (localhost,
 # a preview URL, etc.) — restrict this to the deployed frontend's origin once

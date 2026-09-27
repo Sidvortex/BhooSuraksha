@@ -44,7 +44,7 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({
             <BarChart3 class="w-6 h-6" />
           </div>
           <div>
-            <h2 class="text-lg font-bold text-white">Regional Risk Breakdown & Historical Trends</h2>
+            <h2 class="text-lg font-bold text-slate-50">Regional Risk Breakdown & Historical Trends</h2>
             <p class="text-xs text-slate-400">
               Macro-level vulnerability aggregation across all 8 North Eastern Region states
             </p>
@@ -58,7 +58,7 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({
             class={`px-3 py-1.5 rounded-lg font-semibold transition cursor-pointer ${
               activeTab === 'states'
                 ? 'bg-amber-600 text-white shadow'
-                : 'text-slate-400 hover:text-white'
+                : 'text-slate-400 hover:text-slate-50'
             }`}
           >
             All 8 NER States
@@ -68,7 +68,7 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({
             class={`px-3 py-1.5 rounded-lg font-semibold transition cursor-pointer ${
               activeTab === 'top_risks'
                 ? 'bg-amber-600 text-white shadow'
-                : 'text-slate-400 hover:text-white'
+                : 'text-slate-400 hover:text-slate-50'
             }`}
           >
             Top 5 Hazard Zones
@@ -78,7 +78,7 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({
             class={`px-3 py-1.5 rounded-lg font-semibold transition cursor-pointer ${
               activeTab === 'trends'
                 ? 'bg-amber-600 text-white shadow'
-                : 'text-slate-400 hover:text-white'
+                : 'text-slate-400 hover:text-slate-50'
             }`}
           >
             Rainfall / Saturation Correlation
@@ -101,7 +101,7 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({
                 }`}
               >
                 <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800">
-                  <h3 class="font-bold text-sm text-white">{state.state}</h3>
+                  <h3 class="font-bold text-sm text-slate-50">{state.state}</h3>
                   <span class={`text-xs font-mono px-2 py-0.5 rounded font-bold ${
                     hasCritical
                       ? 'bg-red-950 text-red-300 border border-red-700 animate-pulse'
@@ -175,7 +175,7 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({
                   </span>
                   <div>
                     <div class="flex items-center gap-2">
-                      <h4 class="font-bold text-sm text-white">{loc.name}</h4>
+                      <h4 class="font-bold text-sm text-slate-50">{loc.name}</h4>
                       <span class="text-xs text-slate-400">({loc.state})</span>
                     </div>
                     <p class="text-xs text-slate-400">

@@ -82,7 +82,7 @@ export const HighwayCorridorChecker: React.FC<HighwayCorridorCheckerProps> = ({
             <Car class="w-4 h-4" />
             NORTHEAST HILL HIGHWAY SAFETY RADAR
           </div>
-          <h2 class="text-xl font-bold text-white">
+          <h2 class="text-xl font-bold text-slate-50">
             Live Mountain Corridor Status & Travel Advisories
           </h2>
           <p class="text-xs sm:text-sm text-slate-400 max-w-2xl mt-1">
@@ -106,7 +106,7 @@ export const HighwayCorridorChecker: React.FC<HighwayCorridorCheckerProps> = ({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search by Highway (e.g. NH-10, NH-29, Gangtok, Itanagar)..."
-          class="w-full sm:w-80 px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+          class="w-full sm:w-80 px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-slate-50 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
         />
 
         <div class="flex items-center gap-2 w-full sm:w-auto overflow-x-auto">
@@ -119,7 +119,7 @@ export const HighwayCorridorChecker: React.FC<HighwayCorridorCheckerProps> = ({
               class={`px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
                 selectedState === st
                   ? 'bg-teal-700 text-white'
-                  : 'bg-slate-800 text-slate-400 hover:text-white'
+                  : 'bg-slate-800 text-slate-400 hover:text-slate-50'
               }`}
             >
               {st === 'Arunachal Pradesh' ? 'Arunachal' : st}
@@ -156,7 +156,7 @@ export const HighwayCorridorChecker: React.FC<HighwayCorridorCheckerProps> = ({
                     </strong>
                   </span>
                 </div>
-                <h3 class="text-base font-extrabold text-white mt-0.5">
+                <h3 class="text-base font-extrabold text-slate-50 mt-0.5">
                   {hw.name}
                 </h3>
                 <p class="text-xs text-slate-400 font-mono mt-0.5">
@@ -182,7 +182,7 @@ export const HighwayCorridorChecker: React.FC<HighwayCorridorCheckerProps> = ({
             <div class="grid grid-cols-2 gap-2 text-xs font-mono">
               <div class="p-2.5 rounded-lg bg-slate-950/50 border border-slate-800">
                 <span class="text-slate-400 block mb-0.5">24h Rainfall:</span>
-                <span class="text-white font-bold">{hw.currentRainfall24h} mm</span>
+                <span class="text-slate-50 font-bold">{hw.currentRainfall24h} mm</span>
               </div>
               <div class="p-2.5 rounded-lg bg-slate-950/50 border border-slate-800">
                 <span class="text-slate-400 block mb-0.5">Last Inspection:</span>

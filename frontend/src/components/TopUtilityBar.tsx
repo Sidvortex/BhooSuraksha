@@ -17,9 +17,7 @@ import {
   RotateCcw,
 } from 'lucide-react';
 
-/** Real links for the project — update these to your actual repo/docs. */
-const REPO_URL = 'https://github.com/your-org/bhoosuraksha';
-const DOCS_URL = 'https://github.com/your-org/bhoosuraksha#readme';
+import { REPO_URL, DOCS_URL } from '../data/links';
 
 export const TopUtilityBar: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
@@ -52,45 +50,45 @@ export const TopUtilityBar: React.FC = () => {
         Skip to main content
       </a>
 
-      <div class="hidden sm:flex items-center justify-between gap-4 px-6 py-1.5 bg-slate-950 text-xs text-slate-400 border-b border-slate-800 relative z-[1600]">
+      <div class="hidden sm:flex items-center justify-between gap-4 px-6 py-1.5 bg-gov-navy-dark text-xs text-white/75 relative z-[1600]">
         <div class="flex items-center gap-3">
           <button
             id="btn-lang-en"
             onClick={() => setLanguage('en')}
-            class={`cursor-pointer ${language === 'en' ? 'text-white font-medium' : 'hover:text-slate-200'}`}
+            class={`cursor-pointer ${language === 'en' ? 'text-white font-medium' : 'hover:text-white'}`}
           >
             English
           </button>
-          <span class="text-slate-700">|</span>
+          <span class="text-white/30">|</span>
           <button
             id="btn-lang-hi"
             onClick={() => setLanguage('hi')}
-            class={`cursor-pointer ${language === 'hi' ? 'text-white font-medium' : 'hover:text-slate-200'}`}
+            class={`cursor-pointer ${language === 'hi' ? 'text-white font-medium' : 'hover:text-white'}`}
           >
             हिंदी
           </button>
-          <span class="text-slate-700">|</span>
-          <Link to="/sitemap" class="hover:text-slate-200">{t('nav.sitemap')}</Link>
-          <span class="text-slate-700">|</span>
-          <Link to="/contact" class="hover:text-slate-200">{t('nav.contactUs')}</Link>
-          <span class="text-slate-700">|</span>
-          <Link to="/feedback" class="hover:text-slate-200">{t('nav.feedback')}</Link>
+          <span class="text-white/30">|</span>
+          <Link to="/sitemap" class="hover:text-white">{t('nav.sitemap')}</Link>
+          <span class="text-white/30">|</span>
+          <Link to="/contact" class="hover:text-white">{t('nav.contactUs')}</Link>
+          <span class="text-white/30">|</span>
+          <Link to="/feedback" class="hover:text-white">{t('nav.feedback')}</Link>
         </div>
 
         <div class="flex items-center gap-3">
-          <a href={DOCS_URL} target="_blank" rel="noopener noreferrer" class="hover:text-slate-200 flex items-center gap-1">
+          <a href={DOCS_URL} target="_blank" rel="noopener noreferrer" class="hover:text-white flex items-center gap-1">
             <BookOpen class="w-3.5 h-3.5" /> Docs
           </a>
-          <a href={REPO_URL} target="_blank" rel="noopener noreferrer" class="hover:text-slate-200 flex items-center gap-1">
+          <a href={REPO_URL} target="_blank" rel="noopener noreferrer" class="hover:text-white flex items-center gap-1">
             <Github class="w-3.5 h-3.5" /> Source
           </a>
-          <span class="text-slate-700">|</span>
+          <span class="text-white/30">|</span>
           <div class="flex items-center gap-1">
-            <button onClick={a11y.decreaseFont} class="hover:text-slate-200 cursor-pointer">A-</button>
-            <button onClick={a11y.resetFont} class="hover:text-slate-200 cursor-pointer">A</button>
-            <button onClick={a11y.increaseFont} class="hover:text-slate-200 cursor-pointer font-medium">A+</button>
+            <button onClick={a11y.decreaseFont} class="hover:text-white cursor-pointer">A-</button>
+            <button onClick={a11y.resetFont} class="hover:text-white cursor-pointer">A</button>
+            <button onClick={a11y.increaseFont} class="hover:text-white cursor-pointer font-medium">A+</button>
           </div>
-          <span class="text-slate-700">|</span>
+          <span class="text-white/30">|</span>
 
           {/* Accessibility tools: a normal-flow dropdown anchored here,
               not a viewport-fixed floating button - fixed positioning
@@ -100,7 +98,7 @@ export const TopUtilityBar: React.FC = () => {
             <button
               id="btn-accessibility-toolbar"
               onClick={() => setA11yOpen((v) => !v)}
-              class={`flex items-center gap-1 cursor-pointer ${a11yOpen ? 'text-white' : 'hover:text-slate-200'}`}
+              class={`flex items-center gap-1 cursor-pointer ${a11yOpen ? 'text-white' : 'hover:text-white'}`}
               title="Accessibility tools"
             >
               <Accessibility class="w-3.5 h-3.5" /> Accessibility
@@ -124,7 +122,7 @@ export const TopUtilityBar: React.FC = () => {
                 </div>
                 <button
                   onClick={a11y.resetAll}
-                  class="w-full flex items-center justify-center gap-1.5 mt-2 px-2.5 py-1.5 rounded-lg text-xs bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
+                  class="w-full flex items-center justify-center gap-1.5 mt-2 px-2.5 py-1.5 rounded-lg text-xs bg-slate-900 text-slate-400 hover:text-slate-50 hover:bg-slate-800 transition cursor-pointer"
                 >
                   <RotateCcw class="w-3.5 h-3.5" /> Reset all
                 </button>

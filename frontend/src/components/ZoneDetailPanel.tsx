@@ -77,7 +77,7 @@ export const ZoneDetailPanel: React.FC<ZoneDetailPanelProps> = ({
             <span class="text-slate-600">•</span>
             <span class="text-xs text-slate-400 font-mono">ID: {location.id}</span>
           </div>
-          <h3 class="text-base font-bold text-white leading-snug">{location.name}</h3>
+          <h3 class="text-base font-bold text-slate-50 leading-snug">{location.name}</h3>
           <p class="text-xs text-slate-400 flex items-center gap-1.5 mt-0.5">
             <MapPin class="w-3.5 h-3.5 text-rose-400" />
             <span>{location.district} District</span>
@@ -87,7 +87,7 @@ export const ZoneDetailPanel: React.FC<ZoneDetailPanelProps> = ({
         <button
           id="btn-close-zone-panel"
           onClick={onClose}
-          class="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
+          class="p-1 rounded-lg text-slate-400 hover:text-slate-50 hover:bg-slate-800 transition cursor-pointer"
           title="Close details"
         >
           <X class="w-4 h-4" />
@@ -104,7 +104,7 @@ export const ZoneDetailPanel: React.FC<ZoneDetailPanelProps> = ({
                 Predicted Landslide Probability
               </span>
               <div class="flex items-baseline gap-2">
-                <span class="text-3xl font-bold font-mono tracking-tight text-white">
+                <span class="text-3xl font-bold font-mono tracking-tight text-slate-50">
                   {Math.round(prob * 100)}%
                 </span>
                 <span class="text-xs font-bold px-2 py-0.5 rounded border border-current">

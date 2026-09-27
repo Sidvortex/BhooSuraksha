@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ShieldAlert, LogIn, Server } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { GovNav } from '../components/GovNav';
+import { PageBanner } from '../components/gov/PageBanner';
 import { getBackendUrl, setBackendUrl } from '../utils/backendUrl';
 
 export const Login: React.FC = () => {
@@ -23,21 +25,22 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div id="main-content" class="min-h-screen bg-slate-900 text-slate-100 flex items-center justify-center px-4">
-      <div class="w-full max-w-sm">
-        <div class="flex items-center gap-3 mb-6 justify-center">
-          <div class="w-10 h-10 rounded-lg bg-blue-700 flex items-center justify-center">
-            <ShieldAlert class="w-5 h-5 text-white" />
-          </div>
+    <div class="flex-1 bg-gov-page text-slate-100 flex flex-col">
+      <GovNav />
+      <PageBanner title="Authority Login" crumbs={[{ label: 'Authority Login' }]} />
+      <div id="main-content" class="flex-1 flex items-start justify-center px-4 py-10">
+      <div class="w-full max-w-md bg-white border border-slate-800 rounded-lg shadow-sm overflow-hidden">
+        <div class="bg-gov-navy text-white px-5 py-3 flex items-center gap-2">
+          <ShieldAlert class="w-5 h-5 text-gov-saffron" />
           <div>
-            <h1 class="font-semibold text-white">BhooSuraksha</h1>
-            <p class="text-xs text-slate-400">Authority Command Center Login</p>
+            <div class="font-semibold">Authority Command Center</div>
+            <div class="text-xs text-white/70">For authorised disaster-management staff only</div>
           </div>
         </div>
 
         <form
           onSubmit={handleSubmit}
-          class="bg-slate-950/70 border border-slate-800 rounded-xl p-5 space-y-4"
+          class="p-5 space-y-4"
         >
           <div>
             <label class="text-xs font-semibold text-slate-300 block mb-1 flex items-center gap-1.5">
@@ -102,11 +105,7 @@ export const Login: React.FC = () => {
           </p>
         </form>
 
-        <div class="text-center mt-4">
-          <Link to="/" class="text-xs text-slate-400 hover:text-slate-200">
-            &larr; Back to the public site
-          </Link>
-        </div>
+      </div>
       </div>
     </div>
   );

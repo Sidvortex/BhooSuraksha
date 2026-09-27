@@ -27,6 +27,8 @@ import { useAuth } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Sidebar } from './components/Sidebar';
 import { GovNav } from './components/GovNav';
+import { PageBanner } from './components/gov/PageBanner';
+import { RoutePlanner } from './components/RoutePlanner';
 import { AboutCredits } from './components/AboutCredits';
 import { EarlyWarningBanner } from './components/EarlyWarningBanner';
 import { KpiCards } from './components/KpiCards';
@@ -49,6 +51,15 @@ import {
   ShieldAlert, 
   Info
 } from 'lucide-react';
+
+const CITIZEN_TAB_TITLES: Record<string, string> = {
+  'safe-status': 'District Safety Status',
+  'near-me': 'Near Me',
+  'routes': 'Highway Corridor Status',
+  'report-hazard': 'Report a Ground Hazard',
+  'shelters': 'Evacuation Shelters',
+  'guidelines': 'Landslide Safety Guidelines',
+};
 
 export default function App() {
   // Routing replaces the old portal-gateway state: URL now decides which
@@ -264,7 +275,7 @@ export default function App() {
   }
 
   return (
-    <div id="ner-landslideguard-root" class="min-h-screen bg-slate-900 text-slate-100 flex flex-col font-sans selection:bg-red-600 selection:text-white">
+    <div id="ner-landslideguard-root" class="flex-1 bg-gov-page text-slate-100 flex flex-col font-sans">
       {/* Top Navigation & Status Bar — Authority header only; Citizen/public pages use GovNav */}
       {userRole === 'AUTHORITY' ? (
         <Navbar
@@ -283,7 +294,13 @@ export default function App() {
           citizenReportsCount={citizenReports.length}
         />
       ) : (
-        <GovNav />
+        <>
+          <GovNav />
+          <PageBanner
+            title={CITIZEN_TAB_TITLES[routeTab ?? 'safe-status'] ?? 'Citizen Services'}
+            crumbs={[{ label: 'Citizen Services', to: '/citizen/safe-status' }, { label: CITIZEN_TAB_TITLES[routeTab ?? 'safe-status'] ?? '' }]}
+          />
+        </>
       )}
 
       {/* Early Warning Banner for Critical Risk alerts */}
@@ -347,7 +364,7 @@ export default function App() {
                   criticalCount={criticalCount}
                   activeAlertsCount={activeAlertsCount}
                   averageRisk={averageRisk}
-                  lastModelUpdate="Active (Real-Time)"
+                  lastModelUpdate="Live"
                   onFilterRisk={(risk) => {
                     setSelectedRiskFilter(risk);
                   }}
@@ -422,7 +439,7 @@ export default function App() {
                                 {Math.round(loc.risk_probability * 100)}% Risk
                               </span>
                             </div>
-                            <h4 class="font-bold text-sm text-white truncate">{loc.name}</h4>
+                            <h4 class="font-bold text-sm text-slate-50 truncate">{loc.name}</h4>
                             <div class="flex items-center justify-between text-xs text-slate-400 mt-2 font-mono">
                               <span>Rain: {loc.parameters.rainfall_24h}mm</span>
                               <span>Slope: {loc.parameters.slope}°</span>
@@ -467,7 +484,7 @@ export default function App() {
                   <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-wrap items-center justify-between gap-4">
                     <div>
                       <span class="text-xs text-slate-400 font-mono">SELECTED GIS TARGET</span>
-                      <h3 class="text-base font-bold text-white">
+                      <h3 class="text-base font-bold text-slate-50">
                         {selectedLocation.name} ({selectedLocation.district}, {selectedLocation.state})
                       </h3>
                       <p class="text-xs text-slate-400">
@@ -484,6 +501,8 @@ export default function App() {
                 )}
               </div>
             )}
+
+            {activeTab === 'route-planner' && <RoutePlanner />}
 
             {/* 4. ALERTS & CITIZEN REPORTS TAB */}
             {activeTab === 'alerts' && (
@@ -550,7 +569,7 @@ export default function App() {
           <div class="relative">
             <button
               onClick={() => setIsAiDrawerOpen(false)}
-              class="absolute top-4 right-4 z-10 p-1 rounded-lg text-slate-400 hover:text-white bg-slate-900/80 border border-slate-700 transition cursor-pointer"
+              class="absolute top-4 right-4 z-10 p-1 rounded-lg text-slate-400 hover:text-slate-50 bg-slate-900/80 border border-slate-700 transition cursor-pointer"
             >
               <X class="w-4 h-4" />
             </button>
@@ -570,19 +589,9 @@ export default function App() {
         onApplyPredictionResult={handleApplyPredictionResult}
       />
 
-      {/* Footer */}
-      <footer class="mt-auto border-t border-slate-800 bg-slate-900 py-4 px-6 text-center text-xs text-slate-500">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>
-            BhooSuraksha — North Eastern Region Landslide Risk Monitoring & Early Warning System
-          </span>
-          <span>
-            {userRole === 'CITIZEN' ? 'Citizen Safety & Public Alert Portal' : 'Authority & Emergency Operations Command'}
-          </span>
-        </div>
-      </footer>
 
-      <AboutCredits />
+      {/* Public pages only: on the Authority console it covered the sidebar's risk counters */}
+      {userRole !== 'AUTHORITY' && <AboutCredits />}
     </div>
   );
 }

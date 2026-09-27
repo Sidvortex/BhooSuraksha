@@ -112,7 +112,7 @@ export const AiChatbot: React.FC<AiChatbotProps> = ({
           </div>
           <div>
             <div class="flex items-center gap-2">
-              <h3 class="text-sm font-bold text-white">AI Landslide Risk Assistant</h3>
+              <h3 class="text-sm font-bold text-slate-50">AI Landslide Risk Assistant</h3>
               <span class="px-2 py-0.2 rounded text-xs font-mono bg-indigo-950/80 text-indigo-300 border border-indigo-800">
                 CONTEXT-AWARE
               </span>
@@ -126,7 +126,7 @@ export const AiChatbot: React.FC<AiChatbotProps> = ({
         <div class="flex items-center gap-2">
           <button
             onClick={clearChat}
-            class="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition cursor-pointer"
+            class="p-1.5 text-slate-400 hover:text-slate-50 rounded-lg hover:bg-slate-800 transition cursor-pointer"
             title="Reset conversation"
           >
             <RotateCcw class="w-4 h-4" />
@@ -144,7 +144,7 @@ export const AiChatbot: React.FC<AiChatbotProps> = ({
           <button
             key={idx}
             onClick={() => handleSendMessage(prompt)}
-            class="px-2.5 py-1 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/60 whitespace-nowrap transition cursor-pointer"
+            class="px-2.5 py-1 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-slate-50 border border-slate-700/60 whitespace-nowrap transition cursor-pointer"
           >
             {prompt}
           </button>

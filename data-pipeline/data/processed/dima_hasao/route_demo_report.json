@@ -1,0 +1,42 @@
+{
+  "origin": {
+    "lat": 25.1706,
+    "lon": 93.0167,
+    "label": "Haflong (district HQ)"
+  },
+  "medical_facilities": 24,
+  "reachable_normally": 24,
+  "median_travel_min": 256.9,
+  "SIMULATED_blockage": {
+    "note": "Demonstration scenario, not a real event",
+    "category": "SH",
+    "length_m": 7938.0,
+    "routes_using_it": 19
+  },
+  "after_blockage": {
+    "rerouted_with_detour": 0,
+    "cut_off_entirely": 19,
+    "worst_detours": [],
+    "cut_off": [
+      "Veterinary dispensary [894420]",
+      "Veterinary Firsy Aid Centre [863740]",
+      "HARANGAJAO MPHC [895557]",
+      "Hajadisa SHC [863991]",
+      "State Veterinary Dispensary [899262]",
+      "MODEL HOSPITAL LANGTING [917666]",
+      "Khepre PHC [863993]",
+      "Dehangi SD [894624]",
+      "Maibang CHC [926890]",
+      "Langting BPHC [864001]",
+      "JATINGA SD [962751]",
+      "Umranso Community Health Centre [894431]",
+      "State Vety Dispensary [895563]",
+      "Gunjung BPHC [908102]",
+      "Diyungmukh MPHC [894498]",
+      "Veterinary Firsy Aid Centre [895565]",
+      "Block Primary Health Centre [863353]",
+      "NEEPCO Hospital Umrangso [894445]",
+      "State Veterinary Dispensary [963607]"
+    ]
+  }
+}

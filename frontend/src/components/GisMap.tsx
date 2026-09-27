@@ -6,7 +6,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import { MonitoredLocation, NerState, RiskLevel } from '../types/landslide';
-import { TerrainMap3D, TerrainMarker } from './TerrainMap3D';
+import { TerrainMap3D, TerrainMarker, TERRAIN_3D_HINT } from './TerrainMap3D';
 import { 
   ShieldAlert, 
   Layers, 
@@ -112,7 +112,6 @@ export const GisMap: React.FC<GisMapProps> = ({
       }
     );
     darkTiles.addTo(map);
-    map.getContainer().classList.add('map-dark-mode');
 
     const markersGroup = L.layerGroup().addTo(map);
     const geofenceGroup = L.layerGroup().addTo(map);
@@ -147,7 +146,6 @@ export const GisMap: React.FC<GisMapProps> = ({
           subdomains: 'abc'
         }
       ).addTo(map);
-      map.getContainer().classList.add('map-dark-mode');
     } else {
       // OpenTopoMap: free, no API key, and shows real terrain/elevation
       // contours — genuinely useful context for a landslide risk map.
@@ -159,7 +157,6 @@ export const GisMap: React.FC<GisMapProps> = ({
           subdomains: 'abc'
         }
       ).addTo(map);
-      map.getContainer().classList.remove('map-dark-mode');
     }
   }, [mapTileStyle]);
 
@@ -229,7 +226,7 @@ export const GisMap: React.FC<GisMapProps> = ({
           ${(isCritical || isVeryHigh) ? `
             <div class="absolute inset-0 rounded-full animate-ping opacity-75" style="background-color: ${riskColor}; animation-duration: ${isCritical ? '1.4s' : '2.2s'};"></div>
           ` : ''}
-          <div class="relative flex items-center justify-center rounded-full font-bold text-white shadow-lg transition-all"
+          <div class="relative flex items-center justify-center rounded-full font-bold text-slate-50 shadow-lg transition-all"
                style="width:${size - 6}px; height:${size - 6}px; background-color: ${riskColor}; border: ${isSelected ? '3px solid #ffffff' : '2px solid rgba(255,255,255,0.85)'}; box-shadow: 0 0 16px ${riskColor};">
             <span style="font-size: ${isSelected ? '12px' : '10px'}; font-family: 'JetBrains Mono', monospace;">
               ${Math.round(loc.risk_probability * 100)}%
@@ -261,7 +258,7 @@ export const GisMap: React.FC<GisMapProps> = ({
               ${riskText} (${Math.round(loc.risk_probability * 100)}%)
             </span>
           </div>
-          <h4 class="font-bold text-sm text-white">${loc.name}</h4>
+          <h4 class="font-bold text-sm text-slate-50">${loc.name}</h4>
           <p class="text-xs text-slate-400 mb-2">${loc.district} District • ${loc.latitude.toFixed(2)}°N, ${loc.longitude.toFixed(2)}°E</p>
           
           <div class="grid grid-cols-2 gap-2 text-xs my-2 bg-slate-900/80 p-2 rounded border border-slate-800">
@@ -328,6 +325,7 @@ export const GisMap: React.FC<GisMapProps> = ({
     lon: loc.longitude,
     lat: loc.latitude,
     color: getRiskColor(loc.risk_probability),
+    weight: loc.risk_probability,
     popupHtml: `<strong>${loc.name}</strong><br/>${loc.district}, ${loc.state}<br/>Risk: ${loc.risk_level.replace('_', ' ')} (${Math.round(loc.risk_probability * 100)}%)`,
   }));
 
@@ -406,7 +404,7 @@ export const GisMap: React.FC<GisMapProps> = ({
         <button
           id="btn-geofence-radius-slider"
           onClick={() => setShowRadiusControl(!showRadiusControl)}
-          class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-900/90 border border-slate-700/80 text-slate-300 hover:text-white backdrop-blur shadow-lg transition cursor-pointer"
+          class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-900/90 border border-slate-700/80 text-slate-300 hover:text-slate-50 backdrop-blur shadow-lg transition cursor-pointer"
           title="Adjust administrative geofence radius"
         >
           <Sliders class="w-3.5 h-3.5 text-cyan-400" />
@@ -417,7 +415,7 @@ export const GisMap: React.FC<GisMapProps> = ({
         <button
           id="btn-reset-map-view"
           onClick={resetView}
-          class="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-900/90 border border-slate-700 text-slate-300 hover:text-white backdrop-blur shadow-lg transition cursor-pointer"
+          class="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-900/90 border border-slate-700 text-slate-300 hover:text-slate-50 backdrop-blur shadow-lg transition cursor-pointer"
           title="Reset to Full NER View"
         >
           <Compass class="w-3.5 h-3.5 text-indigo-400" />
@@ -457,11 +455,11 @@ export const GisMap: React.FC<GisMapProps> = ({
       )}
 
       {/* Layer Toggle (Top Right beneath Leaflet zoom) */}
-      <div class="absolute top-24 right-3 z-[1000] flex flex-col gap-1.5">
+      <div class="absolute top-28 right-3 z-[1000] flex flex-col gap-1.5">
         <button
           id="btn-toggle-tile-style"
           onClick={() => setMapTileStyle(mapTileStyle === 'dark' ? 'topo' : 'dark')}
-          class="p-2 bg-slate-900/90 border border-slate-700 rounded-lg text-slate-300 hover:text-white shadow-lg backdrop-blur transition cursor-pointer"
+          class="p-2 bg-slate-900/90 border border-slate-700 rounded-lg text-slate-300 hover:text-slate-50 shadow-lg backdrop-blur transition cursor-pointer"
           title="Toggle Carto Dark / OpenStreetMap satellite view"
         >
           <Layers class="w-4 h-4 text-emerald-400" />
@@ -470,7 +468,7 @@ export const GisMap: React.FC<GisMapProps> = ({
           id="btn-toggle-3d-terrain"
           onClick={() => setIs3D(!is3D)}
           class={`p-2 rounded-lg border shadow-lg backdrop-blur transition cursor-pointer ${
-            is3D ? 'bg-blue-700 border-blue-600 text-white' : 'bg-slate-900/90 border-slate-700 text-slate-300 hover:text-white'
+            is3D ? 'bg-blue-700 border-blue-600 text-white' : 'bg-slate-900/90 border-slate-700 text-slate-300 hover:text-slate-50'
           }`}
           title={is3D ? 'Switch to 2D map' : 'Switch to 3D terrain'}
         >
@@ -503,6 +501,7 @@ export const GisMap: React.FC<GisMapProps> = ({
           <span class="font-bold text-slate-300 uppercase tracking-wider text-xs">Predicted Risk Probability</span>
           <span class="text-xs text-slate-400">ML Model Output</span>
         </div>
+        {is3D && <p class="text-xs text-slate-400 mb-1.5">{TERRAIN_3D_HINT}</p>}
         <div class="grid grid-cols-5 gap-1.5 text-center font-mono text-xs">
           <div>
             <div class="h-2 rounded bg-green-500 mb-1"></div>

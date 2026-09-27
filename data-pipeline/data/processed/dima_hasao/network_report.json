@@ -1,0 +1,44 @@
+{
+  "district": "N.C.Hills",
+  "district_id": 378,
+  "state": "Assam",
+  "tolerance_m": 30,
+  "raw_segments": 479,
+  "connectors_added": 83,
+  "connector_total_m": 388.0,
+  "routable_segments": 1199,
+  "total_road_km": 2214.3,
+  "connectivity_before": {
+    "nodes": 922,
+    "pieces": 443,
+    "largest_piece_nodes": 5,
+    "largest_piece_pct": 0.5
+  },
+  "connectivity_after": {
+    "nodes": 1046,
+    "pieces": 43,
+    "largest_piece_nodes": 917,
+    "largest_piece_pct": 87.7
+  },
+  "habitations": 675,
+  "population": 156695,
+  "population_within_1km_of_main_network": 150261,
+  "population_within_1km_pct": 95.9,
+  "facilities": {
+    "Transport/Admin": 166,
+    "Education": 112,
+    "Agro": 61,
+    "Medical": 24
+  },
+  "speed_assumptions_kmh": {
+    "NH": 35,
+    "SH": 30,
+    "MDR": 25,
+    "RR(ODR)": 20,
+    "RR(VR)": 15,
+    "RR(TRACK)": 8,
+    "BR": 15,
+    "OT": 15,
+    "connector": 5
+  }
+}

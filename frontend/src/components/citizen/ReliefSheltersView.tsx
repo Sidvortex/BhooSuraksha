@@ -38,7 +38,7 @@ export const ReliefSheltersView: React.FC<ReliefSheltersViewProps> = ({ shelters
             <Building2 class="w-4 h-4" />
             DESIGNATED DISASTER EVACUATION SHELTERS
           </div>
-          <h2 class="text-xl font-bold text-white">
+          <h2 class="text-xl font-bold text-slate-50">
             Safe Community Refuges & Relief Centers
           </h2>
           <p class="text-xs sm:text-sm text-slate-400 max-w-2xl mt-1">
@@ -54,7 +54,7 @@ export const ReliefSheltersView: React.FC<ReliefSheltersViewProps> = ({ shelters
               class={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
                 selectedState === st
                   ? 'bg-emerald-600 text-white'
-                  : 'bg-slate-800 text-slate-400 hover:text-white'
+                  : 'bg-slate-800 text-slate-400 hover:text-slate-50'
               }`}
             >
               {st === 'Arunachal Pradesh' ? 'Arunachal' : st}
@@ -80,7 +80,7 @@ export const ReliefSheltersView: React.FC<ReliefSheltersViewProps> = ({ shelters
                     <span class="text-xs font-mono font-bold text-cyan-400 uppercase">
                       {sh.state} • {sh.district}
                     </span>
-                    <h3 class="text-base font-extrabold text-white mt-0.5">
+                    <h3 class="text-base font-extrabold text-slate-50 mt-0.5">
                       {sh.name}
                     </h3>
                     <p class="text-xs text-slate-400 flex items-center gap-1 mt-1">
@@ -132,7 +132,7 @@ export const ReliefSheltersView: React.FC<ReliefSheltersViewProps> = ({ shelters
                 {/* Officer in charge */}
                 <div class="text-xs text-slate-400 bg-slate-950/40 p-2.5 rounded-lg border border-slate-800/60 font-mono">
                   <span class="text-slate-400 block">Nodal Officer:</span>
-                  <span class="text-white font-semibold">{sh.officerInCharge}</span>
+                  <span class="text-slate-50 font-semibold">{sh.officerInCharge}</span>
                 </div>
               </div>
 

@@ -22,10 +22,14 @@ const DICTIONARY: Record<string, { en: string; hi: string }> = {
   'nav.sitemap': { en: 'Sitemap', hi: 'साइटमैप' },
   'nav.contactUs': { en: 'Contact us', hi: 'संपर्क करें' },
   'nav.feedback': { en: 'Feedback', hi: 'प्रतिक्रिया' },
+  'nav.about': { en: 'About', hi: 'परिचय' },
+  'nav.resources': { en: 'Resources', hi: 'संसाधन' },
+  'nav.emergency': { en: 'Emergency Contacts', hi: 'आपातकालीन संपर्क' },
+  'nav.authorityLogin': { en: 'Authority Login', hi: 'प्राधिकरण लॉगिन' },
 
   'brand.name': { en: 'BhooSuraksha', hi: 'भूसुरक्षा' },
   'brand.tagline': { en: 'Landslide Risk Monitoring & Early Warning', hi: 'भूस्खलन जोखिम निगरानी एवं पूर्व चेतावनी' },
-  'brand.govLine': { en: 'North Eastern Region Disaster Management', hi: 'पूर्वोत्तर क्षेत्र आपदा प्रबंधन' },
+  'brand.disclaimer': { en: 'A student initiative · Not an official Government of India website', hi: 'एक छात्र पहल · यह भारत सरकार की आधिकारिक वेबसाइट नहीं है' },
 
   'citizen.safeStatus': { en: 'My Safety Radar', hi: 'मेरी सुरक्षा स्थिति' },
   'citizen.nearMe': { en: 'Near Me', hi: 'मेरे नज़दीक' },
