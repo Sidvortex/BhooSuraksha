@@ -1,5 +1,4 @@
-# BhooSuraksha
-*(भूसुरक्षा — "Earth Protection")*
+# NER LandslideGuard
 
 A landslide risk monitoring & early warning system for India's North
 Eastern Region and its Himalayan-border neighbors, with a public safety
@@ -11,7 +10,7 @@ question — see [SETUP.md](./SETUP.md).**
 ## What's in here
 
 ```
-BhooSuraksha/
+landslide-project/
 ├── backend/
 │   ├── app.py                    API endpoints
 │   ├── auth.py                   Real login system (bcrypt + JWT + sqlite/Turso)
@@ -166,9 +165,6 @@ edit `frontend/src/data/team.ts` to change it in both places.
 See **[SETUP.md](./SETUP.md)**. Short version:
 
 ```bash
-git clone https://github.com/Sidvortex/BhooSuraksha.git
-cd BhooSuraksha
-
 # backend
 cd backend && pip install -r requirements.txt
 python create_admin.py yourname yourpassword

@@ -14,6 +14,7 @@ Run:
     pip install -r requirements.txt
     uvicorn app:app --reload --port 8000
 """
+import os
 from datetime import datetime, timezone
 from typing import List
 
@@ -52,15 +53,28 @@ from schemas import (
 app = FastAPI(title="BhooSuraksha API")
 app.include_router(logistics.router)
 
-# The dashboard is a static SPA that may be served from any origin (localhost,
-# a preview URL, etc.) — restrict this to the deployed frontend's origin once
-# that's fixed.
+# Which websites may call this API. Default "*" (anyone) is fine for local work;
+# once deployed, set ALLOWED_ORIGINS to the frontend's address, comma-separated,
+# e.g. "https://bhoosuraksha.vercel.app". Setu's backend calls this API
+# server-to-server, so it is not affected by this setting.
+ALLOWED_ORIGINS = [o.strip().rstrip("/") for o in os.environ.get("ALLOWED_ORIGINS", "*").split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS or ["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+def _refuse_insecure_secret_in_production():
+    # Render sets RENDER=true; BHOOSURAKSHA_ENV=production does the same anywhere else.
+    deployed = os.environ.get("RENDER") or os.environ.get("BHOOSURAKSHA_ENV") == "production"
+    if deployed and (auth.AUTH_SECRET == "dev-only-insecure-secret-change-me" or len(auth.AUTH_SECRET) < 32):
+        raise RuntimeError("AUTH_SECRET must be set to a random string of 32+ characters before deploying "
+                           "(python -c \"import secrets; print(secrets.token_hex(32))\").")
+    print(f"[cors] allowed origins: {', '.join(ALLOWED_ORIGINS)}")
 
 
 @app.on_event("startup")

@@ -11,6 +11,7 @@ import { INITIAL_MONITORED_LOCATIONS, INITIAL_ALERTS, DEMO_STATE_RISK_SUMMARY, D
 import { runLandslidePrediction } from './predictionService';
 
 import { getBackendUrl } from '../utils/backendUrl';
+import { waitForServer } from '../utils/serverWake';
 
 export const api = {
   /**
@@ -21,6 +22,7 @@ export const api = {
     const BACKEND_URL = getBackendUrl();
     if (BACKEND_URL) {
       try {
+        await waitForServer(); // free hosting may be asleep: wait for the wake-up ping
         const res = await fetch(`${BACKEND_URL}/api/zones`);
         if (res.ok) return await res.json();
       } catch (err) {
@@ -38,6 +40,7 @@ export const api = {
     const BACKEND_URL = getBackendUrl();
     if (BACKEND_URL) {
       try {
+        await waitForServer(); // free hosting may be asleep: wait for the wake-up ping
         const res = await fetch(`${BACKEND_URL}/api/alerts`);
         if (res.ok) return await res.json();
       } catch (err) {
@@ -58,6 +61,7 @@ export const api = {
     const BACKEND_URL = getBackendUrl();
     if (BACKEND_URL) {
       try {
+        await waitForServer(); // free hosting may be asleep: wait for the wake-up ping
         const res = await fetch(`${BACKEND_URL}/api/analytics`);
         if (res.ok) return await res.json();
       } catch (err) {
@@ -94,6 +98,7 @@ export const api = {
     if (!backendUrl) {
       throw new Error('No backend URL configured. Set one in Settings or on the Login page.');
     }
+    await waitForServer(); // free hosting may be asleep: wait for the wake-up ping
     const res = await fetch(`${backendUrl}/api/alerts/notify`, {
       method: 'POST',
       headers: {

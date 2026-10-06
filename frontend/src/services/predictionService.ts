@@ -16,6 +16,7 @@
 
 import { IndiaPredictionRequest, IndiaPredictionResponse, MLPredictionRequest, MLPredictionResponse, ModelInfo, RiskLevel } from '../types/landslide';
 import { getBackendUrl } from '../utils/backendUrl';
+import { waitForServer } from '../utils/serverWake';
 
 export function calculateRiskLevel(probability: number): RiskLevel {
   if (probability >= 0.85) return 'CRITICAL';
@@ -155,6 +156,7 @@ export async function runLandslidePrediction(request: MLPredictionRequest): Prom
 
   if (backendUrl) {
     try {
+      await waitForServer(); // free hosting may be asleep: wait for the wake-up ping
       const response = await fetch(`${backendUrl}/api/predict`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -184,6 +186,7 @@ export async function runIndiaPrediction(request: IndiaPredictionRequest): Promi
   if (!backendUrl) {
     throw new Error('The India-wide model requires a backend URL. Set one in Settings.');
   }
+  await waitForServer(); // free hosting may be asleep: wait for the wake-up ping
   const response = await fetch(`${backendUrl}/api/predict/india`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -204,6 +207,7 @@ export async function runRegionPrediction(request: IndiaPredictionRequest): Prom
   if (!backendUrl) {
     throw new Error('The regional model requires a backend URL. Set one in Settings.');
   }
+  await waitForServer(); // free hosting may be asleep: wait for the wake-up ping
   const response = await fetch(`${backendUrl}/api/predict/region`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -220,6 +224,7 @@ export async function getAvailableModels(): Promise<ModelInfo[]> {
   const backendUrl = getBackendUrl();
   if (!backendUrl) return [];
   try {
+    await waitForServer(); // free hosting may be asleep: wait for the wake-up ping
     const response = await fetch(`${backendUrl}/api/models`);
     if (!response.ok) return [];
     const data = await response.json();

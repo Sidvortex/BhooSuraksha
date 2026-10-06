@@ -230,6 +230,36 @@ or a gap in the road data — both worth surfacing as a bottleneck.
 - Crossings treated as junctions (wrong for flyovers)
 - The blockage is simulated; swap in real blocked segments from field reports or ASDMA
 
+## Region: all 8 NER states (`build_region_network.py`)
+
+One routable network for the whole region, used by Sampark NE. Real results
+(`--tolerance 30 --join-distance 60`):
+
+| | Raw | After build |
+|---|---|---|
+| Road segments / fragments | 59,313 segments in 53,299 separate pieces | 277,986 routable segments |
+| Largest connected network | — | 93.9% of 208,034 junctions |
+| Rural population within 1 km of it | — | 89.5% of 4.09 crore |
+
+Two repair passes: (1) dead ends snapped to a road within 30 m (19,094
+connectors); (2) separate pieces joined where two junctions are within 60 m
+(447 joins, longest 59.7 m) — this fixed state-border digitising gaps, e.g.
+Tripura–Assam (51 m), which took Tripura from 12% to 90% connected.
+
+**Deliberately not bridged** (real multi-km gaps in the source data, not
+digitising errors): Sikkim (128 km — its road link runs through West Bengal,
+outside NER data), southern Mizoram (~7 km; Lunglei, Lawngtlai, Saiha),
+Tawang, Dibang Valley. The roads exist in reality; OpenStreetMap could fill
+these gaps later.
+
+Per-state share of rural population on the main network: Assam 93.7%,
+Manipur 91.7%, Tripura 90.4%, Meghalaya 84.5%, Arunachal 74.6%, Nagaland
+74.4%, Mizoram 36.3%, Sikkim 0% (see above).
+
+Outputs (`data/processed/ner/`, ~17 MB): edges, nodes, packed road shapes,
+per-district stats, villages and facilities with nearest junction. Build time
+~100 s. Copy them to Sampark NE's `backend/data/networks/ner/`.
+
 ---
 
 ## Refresh checklist

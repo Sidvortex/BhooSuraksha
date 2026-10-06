@@ -172,122 +172,19 @@ once you've picked a provider.
 
 ## 7. Full deployment, step by step
 
-Since you have Google Cloud already, this uses Cloud Run for the backend
-and Vercel for the frontend (Cloud Run doesn't serve static SPAs as
-cleanly as a CDN-based host does — Vercel/Netlify are genuinely better
-suited to that half).
+Moved to **[DEPLOY.md](DEPLOY.md)** (Render free plan for the backend, Vercel
+for the website, Turso for the database). `render.yaml` in this repo describes
+the backend service for Render.
 
-### 7.1 Backend → Google Cloud Run
-
-Needs the `gcloud` CLI installed and logged in (`gcloud auth login`,
-`gcloud config set project <your-project-id>`).
-
-```bash
-cd backend
-gcloud run deploy landslide-backend \
-  --source . \
-  --region asia-south1 \
-  --allow-unauthenticated \
-  --set-env-vars AUTH_SECRET="$(python3 -c 'import secrets; print(secrets.token_hex(32))')"
-```
-(`asia-south1` = Mumbai — the closest Google Cloud region to India,
-matters for latency. `--allow-unauthenticated` means the API endpoints
-are public, which they need to be for the frontend to call them — your
-own auth system, not Cloud Run's, is what actually protects
-`/authority/*`.)
-
-This prints a service URL like `https://landslide-backend-xxxxx-el.a.run.app`
-— that's your backend's real address. Verify it:
-```bash
-curl https://landslide-backend-xxxxx-el.a.run.app/health
-```
-
-**If you're using Turso** (recommended — see section 3), add those two
-variables to the same deploy command or afterward:
-```bash
-gcloud run services update landslide-backend \
-  --region asia-south1 \
-  --set-env-vars TURSO_DATABASE_URL="libsql://your-db.turso.io",TURSO_AUTH_TOKEN="your-token"
-```
-Then create your first account against that same Turso database from
-your own machine (no need to redeploy):
-```bash
-TURSO_DATABASE_URL="libsql://your-db.turso.io" TURSO_AUTH_TOKEN="your-token" \
-  python create_admin.py yourname yourpassword
-```
-
-**A Cloud Run-specific gotcha**: by default Cloud Run can scale to zero
-and run multiple instances — each one gets its own empty filesystem. If
-you skip the Turso setup and rely on local sqlite here, every cold start
-or scale-up event effectively wipes your accounts. This is the deployed-
-equivalent of the exact bug from section 3 — Turso is the real fix, not
-a nice-to-have.
-
-### 7.2 Frontend → Vercel
-
-```bash
-cd frontend
-npm install -g vercel   # one-time
-vercel
-```
-Follow the prompts (it auto-detects Vite). For the production deploy:
-```bash
-vercel --prod
-```
-
-Then either:
-- Tell users to set the Backend URL themselves on first login (the field
-  now on the Login page, saved to their browser after that), or
-- Bake in a default so nobody has to: add this to
-  `frontend/index.html`'s `<head>`, before your bundled script tag:
-  ```html
-  <script>window.ENV_BACKEND_URL = "https://landslide-backend-xxxxx-el.a.run.app";</script>
-  ```
-  This makes it the default for everyone, while still letting the Login
-  page's field override it per-browser if needed.
-
-### 7.3 Lock down CORS
-
-`backend/app.py` currently allows all origins (`allow_origins=["*"]`).
-Once you have your real Vercel domain, restrict it:
-```python
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["https://your-app.vercel.app"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-```
-Leaving it wide open in production is a real security gap (anyone's
-website could call your API from a user's browser), not just a style
-preference — do this before sharing the deployed link widely.
-
-### 7.4 What actually causes lag here, and what doesn't
-
-- Map tiles (CARTO/OSM) — already fast, free, nothing to optimize.
-- `/api/zones` scoring 17 points through a RandomForest per request — at
-  this scale that's single-digit milliseconds, not a bottleneck. If you
-  later monitor thousands of points, cache the result for a minute
-  instead of recomputing on every request.
-- Cloud Run cold starts — if the service scaled to zero and nobody hit
-  it in a while, the first request after that has a few seconds of
-  startup delay (loading the RandomForest pickles). Set
-  `--min-instances 1` on the Cloud Run deploy if this matters for your
-  demo/judging, at the cost of a small always-on charge.
-- The frontend bundle is ~670KB minified — fine for a demo, but if you
-  want to trim it later, code-splitting the map/chart libraries with
-  dynamic `import()` would be the next real lever, not anything in this
-  guide.
-
-### 7.5 Post-deploy checklist
-
-- [ ] `curl https://<backend-url>/health` → `{"status":"ok"}`
-- [ ] `curl https://<backend-url>/api/models` → lists `ner`, `india`, `region`
-- [ ] Backend startup logs show `registered accounts: N` where N ≥ 1
-- [ ] Frontend loads, map tiles render, `/citizen` works with no login
-- [ ] Login with a real account succeeds and lands on `/authority/dashboard`
-- [ ] CORS restricted to your real frontend domain (not `*`)
-- [ ] `AUTH_SECRET` is a random value, not the dev default
+Key points:
+- `requirements.txt` is pinned; **scikit-learn must stay 1.8.0**, the version
+  the saved models in `backend/models/` were trained with.
+- Set `VITE_BACKEND_URL` on Vercel so every visitor uses the real backend
+  (before, only people who typed the address into Settings did).
+- Set `ALLOWED_ORIGINS` on Render to the website's address once it exists.
+- On Render the backend refuses to start with the default `AUTH_SECRET`.
+- Wake-up call: pages ping `/health` on load and show a notice while the free
+  server boots (`frontend/src/utils/serverWake.ts`).
 
 ## 8. Team credits
 
@@ -405,8 +302,8 @@ cp data-pipeline/data/processed/dima_hasao/{network.graphml,roads_network.geojso
 ```
 
 New backend dependencies: `networkx`, `shapely`, `pyproj` (already in
-`requirements.txt`). Deploying to Cloud Run works as before: the network files
-are inside `backend/`, so `gcloud run deploy --source backend` includes them.
+`requirements.txt`). The network files are inside `backend/`, so the Render
+deploy (rootDir `backend`) includes them.
 
 Also changed: Leaflet's CSS is now bundled from npm (imported in `main.tsx`)
 instead of loaded from the unpkg CDN. Without it the map layers stack wrongly

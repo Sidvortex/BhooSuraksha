@@ -3,6 +3,7 @@
  * Pilot network: Dima Hasao, Assam.
  */
 import { getBackendUrl } from '../utils/backendUrl';
+import { waitForServer } from '../utils/serverWake';
 
 export interface LatLon { lat: number; lon: number }
 
@@ -42,6 +43,7 @@ export interface NetworkData {
 async function call<T>(path: string, body?: unknown): Promise<T> {
   const base = getBackendUrl();
   if (!base) throw new Error('No backend URL configured. Set it on the Login page or in Settings.');
+  await waitForServer(); // free hosting may be asleep: wait for the wake-up ping
   const res = await fetch(`${base}/api/logistics${path}`, body === undefined ? undefined : {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
   });

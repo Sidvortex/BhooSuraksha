@@ -4,6 +4,7 @@ import { GovNav } from '../components/GovNav';
 import { PageBanner } from '../components/gov/PageBanner';
 import { Send, CheckCircle2 } from 'lucide-react';
 import { getBackendUrl } from '../utils/backendUrl';
+import { waitForServer } from '../utils/serverWake';
 
 const CATEGORIES = ['Bug report', 'Feature suggestion', 'Data accuracy concern', 'General feedback'];
 
@@ -25,6 +26,7 @@ export const Feedback: React.FC = () => {
     }
     setStatus('sending');
     try {
+      await waitForServer(); // free hosting may be asleep: wait for the wake-up ping
       const res = await fetch(`${backendUrl}/api/feedback`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

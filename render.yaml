@@ -1,0 +1,24 @@
+# Render Blueprint for BhooSuraksha's backend (free plan).
+# Render -> New -> Blueprint -> pick the BhooSuraksha repo. It reads this file.
+# The website (frontend/) goes on Vercel, not here.
+services:
+  - type: web
+    name: bhoosuraksha-api
+    runtime: python
+    plan: free
+    region: singapore          # closest Render region to North East India
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.11         # the saved models need scikit-learn 1.8.0, tested on 3.12
+      - key: AUTH_SECRET
+        generateValue: true    # a different random secret from Setu's, made by Render
+      - key: TURSO_DATABASE_URL
+        sync: false            # Render asks for these when you create the Blueprint
+      - key: TURSO_AUTH_TOKEN
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false            # the BhooSuraksha website's address, e.g. https://bhoosuraksha.vercel.app
