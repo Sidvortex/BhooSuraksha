@@ -15,7 +15,7 @@ from typing import Optional
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "data", "feedback.db")
 
-TURSO_URL = os.environ.get("TURSO_DATABASE_URL")
+TURSO_URL = (os.environ.get("TURSO_DATABASE_URL") or "").strip() or None  # libsql://... is fine: turso_http uses HTTPS
 TURSO_TOKEN = os.environ.get("TURSO_AUTH_TOKEN")
 USING_TURSO = bool(TURSO_URL)
 
@@ -76,8 +76,8 @@ class _SqliteBackend:
 
 class _TursoBackend:
     def __init__(self):
-        import libsql_client
-        self._libsql_client = libsql_client
+        import turso_http  # HTTPS client; the old libsql-client's WebSocket is refused by new Turso databases
+        self._libsql_client = turso_http
         with self._client() as client:
             client.execute(_CREATE_TABLE_SQL)
 
