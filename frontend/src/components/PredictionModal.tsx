@@ -710,8 +710,8 @@ export const PredictionModal: React.FC<PredictionModalProps> = ({
 
               <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800 text-slate-400 space-y-1">
                 <span class="text-slate-200 font-bold block">What's real vs. what's still a placeholder:</span>
-                <div>✓ <strong class="text-emerald-400">Trained models:</strong> both are real scikit-learn RandomForests, trained on real data (see SETUP.md and README_INDIA_MODEL.md)</div>
-                <div>✓ <strong class="text-emerald-400">Zones/alerts/analytics:</strong> computed live from real NER rainfall/slope data, not hardcoded</div>
+                <div>✓ <strong class="text-emerald-400">Trained models:</strong> three real scikit-learn RandomForests. India-wide and Regional are trained on real NASA landslide records; the NER model on a synthetic rainfall series (see docs/03-models.md)</div>
+                <div>✓ <strong class="text-emerald-400">Zones/alerts/analytics:</strong> computed by the NER model from the latest values in its dataset, not hardcoded (not live weather yet)</div>
                 <div>✗ <strong class="text-amber-400">Live rainfall feed:</strong> still manual entry — no IMD/AWS or satellite rainfall ingestion yet</div>
                 <div>✗ <strong class="text-amber-400">Live soil moisture/NDVI:</strong> not connected to Sentinel-1/2 or any satellite source</div>
                 <div>✗ <strong class="text-amber-400">Database:</strong> the backend reads flat CSV/pickle files, not PostgreSQL/PostGIS</div>

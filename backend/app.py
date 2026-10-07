@@ -14,6 +14,7 @@ Run:
     pip install -r requirements.txt
     uvicorn app:app --reload --port 8000
 """
+import hashlib
 import os
 from datetime import datetime, timezone
 from typing import List
@@ -139,16 +140,25 @@ def notify_authorities(req: NotifyAuthoritiesRequest, user: dict = Depends(auth.
         "subscriber_count": len(subscribers),
         "note": (
             f"Notification triggered by {user['sub']}, but no subscriber database is "
-            "connected yet - see backend/alerts_dispatch.py and SETUP.md to wire a real "
+            "connected yet - see backend/alerts_dispatch.py and docs/13-roadmap.md to wire a real "
             "SMS/push provider and a subscribers table."
         ),
     }
 
 
+def _client_key(request: Request) -> str:
+    """Who is submitting, for the rate limit only. Behind Render's proxy every
+    request arrives from the proxy's address, so the visitor's IP is read from
+    X-Forwarded-For. Stored only as a hash keyed with AUTH_SECRET, never raw."""
+    ip = request.headers.get("x-forwarded-for", "").split(",")[0].strip() or (
+        request.client.host if request.client else "unknown")
+    return hashlib.sha256(f"{auth.AUTH_SECRET}|{ip}".encode()).hexdigest()[:32]
+
+
 @app.post("/api/feedback", response_model=FeedbackSubmitResponse)
 def submit_feedback(req: FeedbackRequest, request: Request):
     """Public endpoint, real rate limiting: max 5 submissions per IP per hour."""
-    client_ip = request.client.host if request.client else "unknown"
+    client_ip = _client_key(request)
     if feedback_module.is_rate_limited(client_ip):
         raise HTTPException(
             status_code=429,

@@ -9,7 +9,7 @@ individual roads, with coordinates. These are the best public record of
 ASDMA's site disallows automated crawling (robots.txt), so this script does
 NOT download anything: download the PDFs by hand into data/raw/asdma/ (keep
 the original file names, e.g. Daily_Flood_Report_04.07.2024.pdf), or request
-bulk historical data from ASDMA directly. See DATA_SOURCES.md.
+bulk historical data from ASDMA directly. See docs/04-data.md.
 
 Output: data/processed/asdma_road_incidents.csv
   date, source_file, lon, lat, damage_type, row_text
@@ -61,7 +61,7 @@ def main():
 
     pdfs = sorted(glob.glob(os.path.join(IN_DIR, "*.pdf")))
     if not pdfs:
-        raise SystemExit(f"No PDFs in {IN_DIR}. Download reports by hand first (see DATA_SOURCES.md).")
+        raise SystemExit(f"No PDFs in {IN_DIR}. Download reports by hand first (see docs/04-data.md).")
     rows = []
     for path in pdfs:
         d = DATE_IN_NAME.search(os.path.basename(path))

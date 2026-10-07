@@ -1,7 +1,7 @@
 """
 Download the NASA Global Landslide Catalog (GLC) and cut out India + its
 Himalayan border countries - the data BhooSuraksha's landslide models were
-trained on (see backend/README_INDIA_MODEL.md, README_REGION_MODEL.md).
+trained on (see docs/03-models.md).
 
 Official source: NASA Goddard (Kirschbaum et al. 2010), published on
 data.nasa.gov. This script uses a public GitHub copy of the same export

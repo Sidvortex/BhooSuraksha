@@ -2,6 +2,7 @@ geopandas>=0.14
 pyogrio>=0.7
 shapely>=2.0
 networkx>=3.0
+scipy>=1.11        # build_region_network.py (nearest-junction search)
 pandas>=2.0
 xlrd>=2.0          # reads GeoSadak MasterData.xls
 pdfplumber>=0.10   # only for parse_asdma_reports.py

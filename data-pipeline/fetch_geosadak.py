@@ -5,10 +5,10 @@ Source of truth: https://geosadak-pmgsy.nic.in/OpenData (Ministry of Rural
 Development). The portal serves downloads through its web UI, so this script
 uses the DataMeet GitHub mirror, which has the same files in a scriptable form.
 The mirror is a snapshot (last updated March 2022); the portal may have newer
-data. See DATA_SOURCES.md for how to fetch newer files by hand.
+data. See docs/04-data.md for how to fetch newer files by hand.
 
 License: Government Open Data License - India. Free to use, including
-commercially; ATTRIBUTION REQUIRED (see DATA_SOURCES.md for the exact text).
+commercially; ATTRIBUTION REQUIRED (see docs/04-data.md for the exact text).
 
 Usage:
   python fetch_geosadak.py                 # all layers, all 8 NER states

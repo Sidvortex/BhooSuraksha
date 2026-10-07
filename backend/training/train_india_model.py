@@ -14,7 +14,7 @@ or terrain data for each one, so this model instead learns from what the
 catalog actually contains: WHERE (state, lat/lon) and WHEN (month/season)
 landslides have historically been reported across India. It answers "how
 does risk vary by region and season", not "is it raining hard enough right
-now" - a genuinely different, complementary signal. See ../README_INDIA_MODEL.md
+now" - a genuinely different, complementary signal. See docs/03-models.md
 for the full explanation and its limitations (most importantly: reporting
 bias - GLC is news/report-driven, so better-monitored regions and populated
 areas are over-represented relative to remote areas with the same physical
@@ -61,7 +61,7 @@ def build_negatives(positives: pd.DataFrame) -> pd.DataFrame:
     landslide" sample by jittering that event's coordinates by 0.3-1.5 degrees
     (still the same region/state) and drawing an unrelated random month. This
     is a standard technique in landslide susceptibility modeling, but it's an
-    approximation - see README_INDIA_MODEL.md for what it does and doesn't mean.
+    approximation - see docs/03-models.md for what it does and doesn't mean.
     """
     negatives = positives.copy()
     angle = RNG.uniform(0, 2 * np.pi, len(negatives))

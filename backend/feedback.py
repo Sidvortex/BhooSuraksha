@@ -4,7 +4,8 @@ when TURSO_DATABASE_URL/TURSO_AUTH_TOKEN are set, local sqlite otherwise.
 
 Rate limiting: a simple, real per-IP sliding window (max 5 submissions
 per IP per hour), enforced by counting recent rows for that IP - not a
-placeholder. This is enough to stop spam/abuse of a public form; if you
+placeholder. The ip_address column holds a keyed hash of the IP (see
+app._client_key), never the raw address. This is enough to stop spam/abuse of a public form; if you
 need something more robust at scale (distributed deployment, multiple
 backend instances), move this to Redis or a dedicated rate-limit service.
 """

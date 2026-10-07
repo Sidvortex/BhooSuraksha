@@ -2,8 +2,7 @@
 Alert dispatch — sends a real-world notification when a zone crosses into
 HIGH/VERY_HIGH/CRITICAL risk. This is NOT wired to a live provider yet,
 because that requires an account and API key only you can provide (see
-SETUP.md's "Sending real alerts to phones" section for the concrete
-options). What's here is the real integration code for each option,
+docs/13-roadmap.md, "Real alerts to phones", for the concrete options). What's here is the real integration code for each option,
 ready to uncomment once you have credentials - not a fake/mocked call.
 
 Call send_alert(...) from wherever a new HIGH+ risk alert is created
@@ -62,7 +61,7 @@ def send_push_fcm(device_token: str, title: str, body: str) -> None:
 def send_alert(subscribers: list[dict], zone_name: str, risk_level: str) -> None:
     """
     subscribers: [{"phone": "+91XXXXXXXXXX", "device_token": "..."}], e.g.
-    loaded from a `subscribers` table keyed by district (see SETUP.md).
+    loaded from a `subscribers` table keyed by district (see docs/13-roadmap.md).
     Wire this to whichever function(s) above you've configured.
     """
     message = f"LandslideGuard Alert: {risk_level} risk near {zone_name}. Avoid travel through this corridor."

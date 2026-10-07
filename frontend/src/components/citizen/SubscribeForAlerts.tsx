@@ -6,7 +6,7 @@
  * right-sized version: a phone number, a district, a subscribe button.
  *
  * Not wired to a live SMS provider yet — see backend/alerts_dispatch.py
- * and SETUP.md for what's needed to make this send real messages.
+ * and docs/13-roadmap.md for what's needed to make this send real messages.
  */
 import React, { useState } from 'react';
 import { NerState } from '../../types/landslide';
